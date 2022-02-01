@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pro.network.nanjilmartadmin">
+    package="pro.network.adminneyvelimart">
 
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -28,7 +28,7 @@
         android:required="true" />
 
     <application
-        android:name="pro.network.nanjilmartadmin.app.AppController"
+        android:name="pro.network.adminneyvelimart.app.AppController"
         android:allowBackup="true"
         android:icon="@drawable/nanjilmart"
         android:label="@string/app_name"
@@ -45,7 +45,7 @@
             android:required="false" />
 
         <activity
-            android:name="pro.network.nanjilmartadmin.StartActivity"
+            android:name="pro.network.adminneyvelimart.StartActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeNowhite">
             <intent-filter>
@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="pro.network.nanjilmartadmin.NaviActivity"
+            android:name="pro.network.adminneyvelimart.NaviActivity"
             android:label="@string/app_name" />
 
 
@@ -63,11 +63,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBufZZ6hR1jYcnwqXg2egbpvCU8Vbd2UU0" />
         <activity
-            android:name="pro.network.nanjilmartadmin.news.NewsRegister"
+            android:name="pro.network.adminneyvelimart.news.NewsRegister"
             android:label="News"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.product.MainActivityProduct"
+            android:name="pro.network.adminneyvelimart.product.MainActivityProduct"
             android:label="@string/app_name"
             android:theme="@style/AppThemeSe.NoActionBar">
 
@@ -81,7 +81,7 @@
 
         </activity>
         <activity
-            android:name="pro.network.nanjilmartadmin.banner.MainActivityBanner"
+            android:name="pro.network.adminneyvelimart.banner.MainActivityBanner"
             android:label="@string/app_name"
             android:theme="@style/AppThemeSe.NoActionBar">
 
@@ -95,7 +95,7 @@
 
         </activity>
         <activity
-            android:name="pro.network.nanjilmartadmin.order.MainActivityOrder"
+            android:name="pro.network.adminneyvelimart.order.MainActivityOrder"
             android:label="@string/app_name"
             android:theme="@style/AppThemeNowhite">
 
@@ -110,58 +110,58 @@
         </activity>
 
         <activity
-            android:name="pro.network.nanjilmartadmin.banner.BannerRegister"
+            android:name="pro.network.adminneyvelimart.banner.BannerRegister"
             android:label="Banner Upload"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.product.ProductUpdate"
+            android:name="pro.network.adminneyvelimart.product.ProductUpdate"
             android:label="Stock Register"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.categories.CategoriesRegister"
+            android:name="pro.network.adminneyvelimart.categories.CategoriesRegister"
             android:label="categories Register"
             android:theme="@style/AppThemeWhite" />
-        <activity android:name=".app.ActivityMediaOnline" />
+        <activity android:name="pro.network.adminneyvelimart.app.ActivityMediaOnline" />
 
         <activity
-            android:name="pro.network.nanjilmartadmin.categories.CategoriesUpdate"
+            android:name="pro.network.adminneyvelimart.categories.CategoriesUpdate"
             android:label="categories Update"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.categories.MainActivityCategories"
+            android:name="pro.network.adminneyvelimart.categories.MainActivityCategories"
             android:label="categories Main"
             android:theme="@style/AppThemeSe.NoActionBar" />
         <activity
-            android:name="pro.network.nanjilmartadmin.order.Order_TimelineActivity"
+            android:name="pro.network.adminneyvelimart.order.Order_TimelineActivity"
             android:label="Track Order"
             android:theme="@style/AppThemewhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.deliveryboy.CreateDeliveryBoy"
+            android:name="pro.network.adminneyvelimart.deliveryboy.CreateDeliveryBoy"
             android:label="Create Delivery Boy"
             android:theme="@style/AppThemewhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.deliveryboy.MainActivityDelivery"
+            android:name="pro.network.adminneyvelimart.deliveryboy.MainActivityDelivery"
             android:label="Delivery"
             android:theme="@style/AppThemewhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.videos.MainActivityVideo"
+            android:name="pro.network.adminneyvelimart.videos.MainActivityVideo"
             android:label="Videos"
             android:theme="@style/AppThemewhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.shopreg.ShopRegister"
+            android:name="pro.network.adminneyvelimart.shopreg.ShopRegister"
             android:label="Shop Register"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.shopreg.ShopUpdate"
+            android:name="pro.network.adminneyvelimart.shopreg.ShopUpdate"
             android:label="Shop Update"
             android:theme="@style/AppThemeWhite" />
         <activity
-            android:name="pro.network.nanjilmartadmin.shopreg.MainActivityShop"
+            android:name="pro.network.adminneyvelimart.shopreg.MainActivityShop"
             android:label="Shop Register"
             android:theme="@style/AppThemeSe.NoActionBar" />
 
         <service
-            android:name="pro.network.nanjilmartadmin.app.FirebaseMessageReceiver"
+            android:name="pro.network.adminneyvelimart.app.FirebaseMessageReceiver"
             android:exported="false"
             android:stopWithTask="false">
             <intent-filter>
@@ -170,8 +170,8 @@
         </service>
 
         <provider
-            android:name=".app.GenericFileProvider"
-            android:authorities="pro.network.nanjilmartadmin.provider"
+            android:name="pro.network.adminneyvelimart.app.GenericFileProvider"
+            android:authorities="pro.network.adminneyvelimart.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
