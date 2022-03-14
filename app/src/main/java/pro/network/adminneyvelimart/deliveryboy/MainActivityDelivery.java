@@ -1,5 +1,8 @@
 package pro.network.adminneyvelimart.deliveryboy;
 
+import static pro.network.adminneyvelimart.app.Appconfig.DBOYSTATUS;
+import static pro.network.adminneyvelimart.app.Appconfig.DELIVERYBOY;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,9 +34,6 @@ import java.util.Map;
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
-
-import static pro.network.adminneyvelimart.app.Appconfig.DELIVERY_BOY_CHANGE_STATUS;
-import static pro.network.adminneyvelimart.app.Appconfig.DELIVERY_GET_ALL;
 
 
 public class MainActivityDelivery extends AppCompatActivity {
@@ -92,8 +92,6 @@ public class MainActivityDelivery extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
         fetchContacts();
     }
 
@@ -101,8 +99,8 @@ public class MainActivityDelivery extends AppCompatActivity {
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                DELIVERY_GET_ALL, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                DELIVERYBOY, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -131,7 +129,8 @@ public class MainActivityDelivery extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
+                    Log.e("xxxxx", e.toString());
                     Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
                 }
 
@@ -191,8 +190,8 @@ public class MainActivityDelivery extends AppCompatActivity {
     private void statusChange(final String id, final String status) {
         String tag_string_req = "req_register";
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                DELIVERY_BOY_CHANGE_STATUS, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                DBOYSTATUS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -234,8 +233,8 @@ public class MainActivityDelivery extends AppCompatActivity {
         progressDialog.setMessage("Fetching ...");
         showDialog();
         // showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                Appconfig.DELETE_DELIVERYBOY, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.DELETE,
+                Appconfig.DELIVERYBOY + "?id=" + deliveryBeans.get(position).id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -266,7 +265,6 @@ public class MainActivityDelivery extends AppCompatActivity {
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("id", deliveryBeans.get(position).id);
                 return localHashMap;
             }
         };

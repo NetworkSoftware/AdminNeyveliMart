@@ -70,8 +70,8 @@ import pro.network.adminneyvelimart.app.GlideApp;
 import pro.network.adminneyvelimart.app.Imageutils;
 import pro.network.adminneyvelimart.product.ImageClick;
 
-import static pro.network.adminneyvelimart.app.Appconfig.DELETE_SHOP;
-import static pro.network.adminneyvelimart.app.Appconfig.UPDATE_SHOP;
+
+import static pro.network.adminneyvelimart.app.Appconfig.SHOP;
 
 /**
  * Created by user_1 on 11-07-2018.
@@ -157,7 +157,6 @@ public class ShopUpdate extends AppCompatActivity implements Imageutils.ImageAtt
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (shop_name.getText().toString().length() <= 0) {
                     shop_name.setError("Select the Shop Name");
                 } else if (phone.getText().toString().length() <= 0) {
@@ -173,42 +172,7 @@ public class ShopUpdate extends AppCompatActivity implements Imageutils.ImageAtt
         });
 
 
-        try {
 
-            Shop contact = (Shop) getIntent().getSerializableExtra("data");
-            shop_name.setText(contact.shop_name);
-            imageUrl = contact.image;
-            GlideApp.with(ShopUpdate.this).load(contact.image)
-                    .placeholder(R.drawable.ic_add_a_photo_black_24dp)
-                    .into(profiletImage);
-            phone.setText(contact.phone);
-            latlong.setText(contact.latlong);
-            studentId = contact.id;
-            stock_update.setText(contact.stock_update);
-            if (contact.getTime_schedule() == null || contact.getTime_schedule().equalsIgnoreCase("null")) {
-                times = new ArrayList<>();
-            } else {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    Object listBeans = new Gson().fromJson(contact.getTime_schedule(),
-                            Object.class);
-                    times = mapper.convertValue(
-                            listBeans,
-                            new TypeReference<ArrayList<Time>>() {
-                            }
-                    );
-                } catch (Exception e) {
-                    Log.e("xxxxxxxxxx", e.toString());
-                }
-            }
-            if (times == null) {
-                times = new ArrayList<>();
-            }
-            timeAdapter.notifyData(times);
-        } catch (Exception e) {
-            Log.e("xxxxxxxxxxx", e.toString());
-
-        }
     }
 
     private void showDaysBottom(int position) {
@@ -358,8 +322,8 @@ public class ShopUpdate extends AppCompatActivity implements Imageutils.ImageAtt
         String tag_string_req = "req_register";
         pDialog.setMessage("Updateing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                UPDATE_SHOP, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                SHOP, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -408,8 +372,8 @@ public class ShopUpdate extends AppCompatActivity implements Imageutils.ImageAtt
         String tag_string_req = "req_register";
         pDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                DELETE_SHOP, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.DELETE,
+                SHOP, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -627,7 +591,7 @@ public class ShopUpdate extends AppCompatActivity implements Imageutils.ImageAtt
                             .dontAnimate()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false)
-                            .placeholder(R.drawable.nanjilmart)
+                            .placeholder(R.drawable.neyvelimart)
                             .into(profiletImage);
                     imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {

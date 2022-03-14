@@ -1,11 +1,13 @@
 package pro.network.adminneyvelimart.product;
 
 import static pro.network.adminneyvelimart.app.Appconfig.STOCK;
+import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +52,8 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
     int offset = 0;
     boolean isAlreadyLoading;
     ProgressBar productRecycle;
+    String shopID = null, shoName = null;
+    SharedPreferences sharedPreferences;
     private RecyclerView recyclerView;
     private List<Product> contactList;
     private ProductAdapter mAdapter;
@@ -63,7 +67,10 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
         setSupportActionBar(toolbar);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-
+        sharedPreferences = getSharedPreferences(mypreference,
+                Context.MODE_PRIVATE);
+        shopID = getIntent().getStringExtra("shopId");
+        shoName = getIntent().getStringExtra("shopName");
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.toolbar_title);
@@ -99,7 +106,6 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                 }
             }
         });
-        //fetchContacts();
 
 
         FloatingActionButton addStock = findViewById(R.id.addStock);
@@ -107,6 +113,8 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivityProduct.this, ProductUpdate.class);
+                intent.putExtra("shopId", shopID);
+                intent.putExtra("shopName", shoName);
                 startActivity(intent);
             }
         });
@@ -118,8 +126,14 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         productRecycle.setVisibility(View.VISIBLE);
+        String shopId = null;
+        if ("Admin".equalsIgnoreCase(sharedPreferences.getString(Appconfig.role, ""))) {
+            shopId = "Admin";
+        } else {
+            shopId = shopID;
+        }
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                STOCK + "?searchKey=" + searchKey + "&offset=" + offset * 10 + "", new Response.Listener<String>() {
+                STOCK + "?searchKey=" + searchKey + "&offset=" + offset * 10 + "" + "&shopid=" + shopId, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 productRecycle.setVisibility(View.GONE);
@@ -130,6 +144,13 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                 try {
                     JSONObject jObj = new JSONObject(response);
                     int success = jObj.getInt("success");
+                    if (jObj.has("offset")) {
+                        int offSet = jObj.getInt("offset") / 10;
+                        offset = offSet;
+                        if (offset == 0) {
+                            contactList = new ArrayList<>();
+                        }
+                    }
                     if (success == 1) {
                         JSONArray jsonArray = jObj.getJSONArray("data");
                         offset = offset + 1;
@@ -220,6 +241,7 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                     offset = 0;
                     fetchContacts(query);
                 } else if (query.length() == 0) {
+                    offset = 0;
                     fetchContacts("");
                 }
                 return false;
@@ -232,6 +254,7 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                     offset = 0;
                     fetchContacts(query);
                 } else if (query.length() == 0) {
+                    offset = 0;
                     fetchContacts("");
                 }
                 return false;
@@ -283,12 +306,16 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
     public void onContactSelected(Product contact) {
         Intent intent = new Intent(MainActivityProduct.this, ProductUpdate.class);
         intent.putExtra("data", contact);
+        intent.putExtra("shopId", shopID);
+        intent.putExtra("shopName", shoName);
         startActivity(intent);
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+        offset = 0;
         fetchContacts("");
     }
 

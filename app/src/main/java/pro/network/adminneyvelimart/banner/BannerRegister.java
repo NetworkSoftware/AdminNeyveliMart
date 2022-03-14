@@ -49,8 +49,7 @@ import pro.network.adminneyvelimart.app.Appconfig;
 import pro.network.adminneyvelimart.app.GlideApp;
 import pro.network.adminneyvelimart.app.Imageutils;
 
-import static pro.network.adminneyvelimart.app.Appconfig.BANNERS_CREATE;
-import static pro.network.adminneyvelimart.app.Appconfig.BANNERS_UPDATE;
+import static pro.network.adminneyvelimart.app.Appconfig.BANNERS;
 import static pro.network.adminneyvelimart.app.Appconfig.STOCK;
 
 /**
@@ -135,7 +134,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         pDialog.setMessage("Uploading ...");
         showDialog();
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                BANNERS_CREATE, new Response.Listener<String>() {
+                BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response.toString());
@@ -166,7 +165,6 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-
                 localHashMap.put("banner", imageUrl);
                 localHashMap.put("description", description.getText().toString());
                 localHashMap.put("stockname", nameIdMap.get(stock_name.getText().toString()));
@@ -181,7 +179,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         pDialog.setMessage("Uploading ...");
         showDialog();
         StringRequest strReq = new StringRequest(Request.Method.PUT,
-                BANNERS_UPDATE, new Response.Listener<String>() {
+                BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response.toString());
@@ -393,7 +391,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                             .dontAnimate()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false)
-                            .placeholder(R.drawable.nanjilmart)
+                            .placeholder(R.drawable.neyvelimart)
                             .into(profiletImage);
                     imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {

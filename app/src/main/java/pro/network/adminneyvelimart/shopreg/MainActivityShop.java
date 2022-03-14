@@ -1,5 +1,7 @@
 package pro.network.adminneyvelimart.shopreg;
 
+import static pro.network.adminneyvelimart.app.Appconfig.SHOP;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,8 +36,6 @@ import java.util.Map;
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
-
-import static pro.network.adminneyvelimart.app.Appconfig.DATA_FETCH_ALL_SHOP;
 
 public class MainActivityShop extends AppCompatActivity implements ShopClick {
     private static final String TAG = MainActivityShop.class.getSimpleName();
@@ -80,9 +80,9 @@ public class MainActivityShop extends AppCompatActivity implements ShopClick {
     private void fetchContacts() {
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
-      //  showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                DATA_FETCH_ALL_SHOP, new Response.Listener<String>() {
+        //  showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                SHOP, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -104,7 +104,8 @@ public class MainActivityShop extends AppCompatActivity implements ShopClick {
                             categories.setLatlong(jsonObject.getString("latlong"));
                             categories.setStock_update(jsonObject.getString("stock_update"));
                             categories.setTime_schedule(jsonObject.getString("time_schedule"));
-                            if(!jsonObject.isNull("image")){
+                            categories.setPassword(jsonObject.getString("password"));
+                            if (!jsonObject.isNull("image")) {
                                 categories.setImage(jsonObject.getString("image"));
                             }
                             categoriesList.add(categories);
@@ -188,12 +189,11 @@ public class MainActivityShop extends AppCompatActivity implements ShopClick {
     @Override
     public void onDeleteClick(int position) {
         deleteFile(position);
-
     }
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(MainActivityShop.this, ShopUpdate.class);
+        Intent intent = new Intent(MainActivityShop.this, ShopRegister.class);
         intent.putExtra("data", categoriesList.get(position));
         startActivity(intent);
     }
@@ -203,8 +203,8 @@ public class MainActivityShop extends AppCompatActivity implements ShopClick {
         progressDialog.setMessage("Fetching ...");
         showDialog();
         // showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                Appconfig.DELETE_SHOP, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.DELETE,
+                Appconfig.SHOP + "?id=" + categoriesList.get(position).id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -235,7 +235,6 @@ public class MainActivityShop extends AppCompatActivity implements ShopClick {
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("id", categoriesList.get(position).id);
                 return localHashMap;
             }
         };

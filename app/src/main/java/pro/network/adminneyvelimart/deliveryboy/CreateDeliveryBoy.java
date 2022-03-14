@@ -1,5 +1,7 @@
 package pro.network.adminneyvelimart.deliveryboy;
 
+import static pro.network.adminneyvelimart.app.Appconfig.DELIVERYBOY;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -50,9 +52,6 @@ import pro.network.adminneyvelimart.app.BaseActivity;
 import pro.network.adminneyvelimart.app.GlideApp;
 import pro.network.adminneyvelimart.app.Imageutils;
 
-import static pro.network.adminneyvelimart.app.Appconfig.CREATE_DELIVERYBOY;
-import static pro.network.adminneyvelimart.app.Appconfig.UPDATE_DELIVERYBOY;
-
 public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageAttachmentListener {
     private static final int FINE_LOCATION_CODE = 199;
     private final String TAG = getClass().getSimpleName();
@@ -69,11 +68,11 @@ public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageA
     CardView itemsAddprofile;
     CardView itemsAddlicense;
     CardView itemsAddadharcard;
+    String studentId = null;
+    ProgressDialog pDialog;
     private String imageUrlProfile = "";
     private String imageUrllicense = "";
     private String imageUrladharcard = "";
-    String studentId = null;
-    ProgressDialog pDialog;
 
     @Override
     protected void startDemo() {
@@ -179,13 +178,13 @@ public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageA
     private void registerUser() {
         String tag_string_req = "req_register";
         pDialog.setMessage("Processing ...");
-        String url = CREATE_DELIVERYBOY;
+        int method = Request.Method.POST;
         if (studentId != null) {
-            url = UPDATE_DELIVERYBOY;
+            method = Request.Method.PUT;
         }
+        String url = DELIVERYBOY;
         showDialog();
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
+        StringRequest strReq = new StringRequest(method,
                 url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -193,15 +192,14 @@ public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageA
                 hideDialog();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
+                    int success = jsonObject.getInt("success");
                     String msg = jsonObject.getString("message");
-                    if (success) {
+                    if (success == 1) {
                         finish();
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
-
                 }
 
             }
@@ -258,6 +256,22 @@ public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageA
         super.onActivityResult(requestCode, resultCode, data);
         imageutils.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private class UploadFileToServer extends AsyncTask<String, Integer, String> {
@@ -388,16 +402,6 @@ public class CreateDeliveryBoy extends BaseActivity implements Imageutils.ImageA
         }
 
     }
-    private void showDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
-
-    private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
-    }
-
 }
 
 

@@ -1,25 +1,28 @@
 package pro.network.adminneyvelimart.banner;
 
+import static pro.network.adminneyvelimart.app.Appconfig.BANNERS;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,14 +37,12 @@ import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
 
-import static pro.network.adminneyvelimart.app.Appconfig.BANNERS_GET_ALL;
-
 public class MainActivityBanner extends AppCompatActivity implements BannerClick {
     private static final String TAG = MainActivityBanner.class.getSimpleName();
+    ProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private List<Banner> bannerList;
     private BannerAdapter mAdapter;
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
 
         recyclerView = findViewById(R.id.recycler_view);
         bannerList = new ArrayList<>();
-        mAdapter = new BannerAdapter(this, bannerList,this);
+        mAdapter = new BannerAdapter(this, bannerList, this);
 
         // white background notification bar
         whiteNotificationBar(recyclerView);
@@ -69,8 +70,7 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         recyclerView.setAdapter(mAdapter);
 
 
-
-        FloatingActionButton addStock = (FloatingActionButton) findViewById(R.id.addbanner);
+        FloatingActionButton addStock = findViewById(R.id.addbanner);
         addStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,11 +87,11 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                BANNERS_GET_ALL, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("Register Response: ", response.toString());
+                Log.d("Register Response: ", response);
                 hideDialog();
                 try {
                     JSONObject jObj = new JSONObject(response);
@@ -106,18 +106,16 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
                             banner.setId(jsonObject.getString("id"));
                             banner.setBanner(jsonObject.getString("banner"));
                             banner.setDescription(jsonObject.getString("description"));
-                            if(!jsonObject.isNull("stockname")){
+                            if (!jsonObject.isNull("stockname")) {
                                 banner.setStockname(jsonObject.getString("stockname"));
                             }
                             bannerList.add(banner);
                         }
                         mAdapter.notifyData(bannerList);
-                        getSupportActionBar().setSubtitle(String.valueOf(bannerList.size()) + "  Nos");
-
                     } else {
                         Toast.makeText(MainActivityBanner.this, jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     Log.e("xxxxxxxxxxx", e.toString());
                     Toast.makeText(MainActivityBanner.this, "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
 
@@ -141,6 +139,7 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
+
     private void showDialog() {
         if (!progressDialog.isShowing())
             progressDialog.show();
@@ -167,7 +166,6 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
     }
 
 
-
     private void whiteNotificationBar(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = view.getSystemUiVisibility();
@@ -176,7 +174,6 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
             getWindow().setStatusBarColor(Color.WHITE);
         }
     }
-
 
 
     @Override
@@ -204,11 +201,11 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         progressDialog.setMessage("Fetching ...");
         showDialog();
         // showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                Appconfig.BANNERS_DELETE, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.DELETE,
+                BANNERS + "?id=" + bannerList.get(position).id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("Register Response: ", response.toString());
+                Log.d("Register Response: ", response);
                 hideDialog();
                 try {
                     JSONObject jObj = new JSONObject(response);
@@ -228,7 +225,7 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
 
             @Override
             public void onErrorResponse(VolleyError error) {
-              Log.e("Registration Error: ", error.getMessage());
+                Log.e("Registration Error: ", error.getMessage());
                 Toast.makeText(MainActivityBanner.this,
                         "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
                 hideDialog();
@@ -236,7 +233,6 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("id", bannerList.get(position).id);
                 return localHashMap;
             }
         };

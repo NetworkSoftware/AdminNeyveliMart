@@ -117,6 +117,17 @@ public class PdfConfig {
 
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
+        table7.addCell(createTextRight("Wallet Amount", catNormalFont));
+        table7.addCell(createTextLeft(mainbean.getWalletAmt(), catNormalFont, false));
+
+
+        table7.addCell(createTextLeft("", catNormalFont, false));
+        table7.addCell(createTextLeft("", catNormalFont, false));
+        table7.addCell(createTextRight("Coupon Amount", catNormalFont));
+        table7.addCell(createTextLeft(mainbean.getCouponAmt(), catNormalFont, false));
+
+        table7.addCell(createTextLeft("", catNormalFont, false));
+        table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Packing Charges", catNormalFont));
         table7.addCell(createTextLeft("₹10.00", catNormalFont, false));
 

@@ -1,10 +1,6 @@
 package pro.network.adminneyvelimart.order;
 
 import android.content.Context;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +9,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +25,11 @@ import pro.network.adminneyvelimart.app.Appconfig;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder>
         implements Filterable {
-    private Context context;
+    private final Context context;
+    private final ContactsAdapterListener listener;
+    StatusListener statusListener;
     private List<Order> orderList;
     private List<Order> orderListFiltered;
-    private ContactsAdapterListener listener;
-    StatusListener statusListener;
 
     public OrderAdapter(Context context, List<Order> orderList, ContactsAdapterListener listener, StatusListener statusListener) {
         this.context = context;
@@ -51,7 +50,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Order order = orderListFiltered.get(position);
-        holder.order_id.setText("#"+ order.getId());
+        holder.order_id.setText("#" + order.getId());
         holder.price.setText(order.getPrice());
         holder.quantity.setText(order.getQuantity());
         holder.status.setText(order.getStatus());
@@ -76,34 +75,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             holder.cancalOrder.setVisibility(View.VISIBLE);
             holder.deliveredBtn.setVisibility(View.GONE);
             holder.completed.setVisibility(View.GONE);
-
         } else if (order.getStatus().equalsIgnoreCase("InProgress")) {
             holder.assignDboy.setVisibility(View.GONE);
             holder.inprogress.setVisibility(View.GONE);
             holder.cancalOrder.setVisibility(View.GONE);
             holder.deliveredBtn.setVisibility(View.VISIBLE);
             holder.completed.setVisibility(View.GONE);
-
-        } else if (order.getStatus().equalsIgnoreCase("Delivered")) {
+        } else if (order.getStatus().equalsIgnoreCase("Delivered") ||
+                (order.getStatus().equalsIgnoreCase("canceled"))) {
             holder.assignDboy.setVisibility(View.GONE);
             holder.inprogress.setVisibility(View.GONE);
             holder.deliveredBtn.setVisibility(View.GONE);
             holder.cancalOrder.setVisibility(View.GONE);
             holder.completed.setVisibility(View.GONE);
-
-
-        } else if (!order.getStatus().equalsIgnoreCase("canceled")
-                && order.getStatus().equalsIgnoreCase("ordered")) {
-            holder.cancalOrder.setVisibility(View.VISIBLE);
-            holder.assignDboy.setVisibility(View.GONE);
-            holder.inprogress.setVisibility(View.GONE);
-            holder.deliveredBtn.setVisibility(View.GONE);
         } else {
-            holder.assignDboy.setVisibility(View.GONE);
+            holder.assignDboy.setVisibility(View.VISIBLE);
             holder.inprogress.setVisibility(View.VISIBLE);
+            holder.cancalOrder.setVisibility(View.VISIBLE);
             holder.deliveredBtn.setVisibility(View.VISIBLE);
-            holder.cancalOrder.setVisibility(View.GONE);
-            holder.completed.setVisibility(View.GONE);
+            holder.completed.setVisibility(View.VISIBLE);
         }
 
 
@@ -111,7 +101,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         final LinearLayoutManager addManager1 = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         holder.cart_sub_list.setLayoutManager(addManager1);
         holder.cart_sub_list.setAdapter(OrderListAdapter);
-
         holder.deliveredBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,10 +143,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
                 statusListener.onAssignDboy(order);
             }
         });
+        holder.cashback.setText(order.cashback);
         holder.bill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 statusListener.bill(order);
+            }
+        });
+        holder.wallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                statusListener.wallet(order);
             }
         });
 
@@ -217,11 +214,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, price, status, quantity, phone, orderedOn, address,dtime, reason,order_id;
+        public TextView name, price, status, quantity, phone, orderedOn, address, dtime, reason,cashback, order_id;
         public ImageView thumbnail;
         public RecyclerView cart_sub_list;
         Button deliveredBtn, whatsapp, call, cancalOrder,
-                assignDboy, trackOrder, assignShop, inprogress, completed, bill;
+                assignDboy, trackOrder, wallet, inprogress, completed, bill;
 
         public MyViewHolder(View view) {
             super(view);
@@ -248,6 +245,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             order_id = view.findViewById(R.id.order_id);
             bill = view.findViewById(R.id.bill);
             dtime = view.findViewById(R.id.dtime);
+            wallet = view.findViewById(R.id.wallet);
+            cashback = view.findViewById(R.id.cashback);
 
         }
     }

@@ -1,5 +1,7 @@
 package pro.network.adminneyvelimart.categories;
 
+import static pro.network.adminneyvelimart.app.Appconfig.CATEGORIES;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,8 +36,6 @@ import java.util.Map;
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
-
-import static pro.network.adminneyvelimart.app.Appconfig.CATEGORIES_GET_ALL;
 
 public class MainActivityCategories extends AppCompatActivity implements CategoriesClick {
     private static final String TAG = pro.network.adminneyvelimart.categories.MainActivityCategories.class.getSimpleName();
@@ -84,8 +84,8 @@ public class MainActivityCategories extends AppCompatActivity implements Categor
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                CATEGORIES_GET_ALL, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                CATEGORIES, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -189,7 +189,7 @@ public class MainActivityCategories extends AppCompatActivity implements Categor
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(MainActivityCategories.this, CategoriesUpdate.class);
+        Intent intent = new Intent(MainActivityCategories.this, CategoriesRegister.class);
         intent.putExtra("data", categoriesList.get(position));
         startActivity(intent);
     }
@@ -198,9 +198,8 @@ public class MainActivityCategories extends AppCompatActivity implements Categor
         String tag_string_req = "req_register";
         progressDialog.setMessage("Fetching ...");
         showDialog();
-        // showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                Appconfig.CATEGORIES_DELETE, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.DELETE,
+                Appconfig.CATEGORIES + "?id=" + categoriesList.get(position).id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -231,7 +230,6 @@ public class MainActivityCategories extends AppCompatActivity implements Categor
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("id", categoriesList.get(position).id);
                 return localHashMap;
             }
         };

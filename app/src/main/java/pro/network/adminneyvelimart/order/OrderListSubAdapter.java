@@ -22,9 +22,9 @@ import pro.network.adminneyvelimart.product.Product;
 
 public class OrderListSubAdapter extends RecyclerView.Adapter<OrderListSubAdapter.MyViewHolder> {
 
+    private final Context mainActivityUser;
     SharedPreferences preferences;
     int selectedPosition = 0;
-    private final Context mainActivityUser;
     private ArrayList<Product> myorderBeans;
 
     public OrderListSubAdapter(Context mainActivityUser, ArrayList<Product> myorderBeans) {
@@ -55,6 +55,7 @@ public class OrderListSubAdapter extends RecyclerView.Adapter<OrderListSubAdapte
         holder.qty.setText("Qty: " + myorderBean.getQty());
         holder.productName.setText(myorderBean.getBrand() + " - " + myorderBean.getModel());
         holder.shopName.setText("Shop:" + myorderBean.getShopname());
+        holder.createdOn.setText(myorderBean.getCreatedon());
         GlideApp.with(mainActivityUser)
                 .load(Appconfig.getResizedImage(myorderBean.getImage(), true))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -73,7 +74,7 @@ public class OrderListSubAdapter extends RecyclerView.Adapter<OrderListSubAdapte
         private final ImageView product_image;
         private final TextView qty;
         private final TextView productName;
-        private final TextView shopName;
+        private final TextView shopName, createdOn;
 
 
         public MyViewHolder(View view) {
@@ -82,6 +83,7 @@ public class OrderListSubAdapter extends RecyclerView.Adapter<OrderListSubAdapte
             qty = view.findViewById(R.id.qty);
             productName = view.findViewById(R.id.productName);
             shopName = view.findViewById(R.id.shopName);
+            createdOn = view.findViewById(R.id.createdOn);
         }
     }
 

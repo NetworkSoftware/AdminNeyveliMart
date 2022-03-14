@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +18,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.io.IOException;
 
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.order.MainActivityOrder;
@@ -44,7 +47,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification);
         remoteViews.setTextViewText(R.id.title, title);
         remoteViews.setTextViewText(R.id.message, message);
-        remoteViews.setImageViewResource(R.id.icon, R.drawable.nanjilmart);
+        remoteViews.setImageViewResource(R.id.icon, R.drawable.neyvelimart);
         return remoteViews;
     }
 
@@ -60,8 +63,8 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
-                .setSmallIcon(R.drawable.nanjilmart)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.nanjilmart))
+                .setSmallIcon(R.drawable.neyvelimart)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.neyvelimart))
                 .setSound(uri)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
@@ -76,7 +79,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         } else {
             builder = builder.setContentTitle(title)
                     .setContentText(message)
-                    .setSmallIcon(R.drawable.nanjilmart);
+                    .setSmallIcon(R.drawable.neyvelimart);
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -85,7 +88,25 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             notificationChannel.setSound(uri, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-
+        Uri sound = Uri.parse(
+                "android.resource://" +
+                        getApplicationContext().getPackageName() +
+                        "/" +
+                        R.raw.notification);
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setLooping(false);
+        try {
+            // mediaPlayer.setDataSource(String.valueOf(myUri));
+            mediaPlayer.setDataSource(FirebaseMessageReceiver.this, sound);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
         notificationManager.notify(0, builder.build());
     }
 

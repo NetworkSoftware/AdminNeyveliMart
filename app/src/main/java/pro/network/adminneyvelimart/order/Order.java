@@ -26,6 +26,8 @@ public class Order implements Serializable {
     String total;
     String dtime;
     String shopname;
+    String paymentId;
+    String user,walletAmt,couponAmt,cashback;
 
     public Order() {
     }
@@ -169,5 +171,45 @@ public class Order implements Serializable {
 
     public void setShopname(String shopname) {
         this.shopname = shopname;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getWalletAmt() {
+        return walletAmt;
+    }
+
+    public void setWalletAmt(String walletAmt) {
+        this.walletAmt = walletAmt;
+    }
+
+    public String getCouponAmt() {
+        return couponAmt;
+    }
+
+    public void setCouponAmt(String couponAmt) {
+        this.couponAmt = couponAmt;
+    }
+
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
     }
 }

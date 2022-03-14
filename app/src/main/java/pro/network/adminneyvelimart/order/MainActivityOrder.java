@@ -1,5 +1,10 @@
 package pro.network.adminneyvelimart.order;
 
+import static pro.network.adminneyvelimart.app.Appconfig.DELIVERYBOY;
+import static pro.network.adminneyvelimart.app.Appconfig.ORDER;
+import static pro.network.adminneyvelimart.app.Appconfig.ORDER_ASSIGN_DBOY;
+import static pro.network.adminneyvelimart.app.Appconfig.WALLET;
+
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -20,8 +25,10 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,12 +76,8 @@ import pro.network.adminneyvelimart.app.Appconfig;
 import pro.network.adminneyvelimart.app.PdfConfig;
 import pro.network.adminneyvelimart.product.Product;
 
-import static pro.network.adminneyvelimart.app.Appconfig.DELIVERY_GET_ALL;
-import static pro.network.adminneyvelimart.app.Appconfig.ORDER_ASSIGN_DBOY;
-import static pro.network.adminneyvelimart.app.Appconfig.ORDER_CHANGE_STATUS;
-import static pro.network.adminneyvelimart.app.Appconfig.ORDER_GET_ALL;
-
-public class MainActivityOrder extends AppCompatActivity implements OrderAdapter.ContactsAdapterListener, StatusListener {
+public class MainActivityOrder extends AppCompatActivity
+        implements OrderAdapter.ContactsAdapterListener, StatusListener {
     private static final String TAG = MainActivityOrder.class.getSimpleName();
     private final Set<String> time_Schedule = new HashSet<>();
     ProgressDialog progressDialog;
@@ -82,6 +85,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
     int offset = 0;
     ArrayList<String> dboysName = new ArrayList<>();
     Map<String, String> idNameMap = new HashMap<>();
+    String shopID = null, shoName = null, role = null;
     private RecyclerView recyclerView;
     private List<Order> orderList;
     private OrderAdapter mAdapter;
@@ -89,6 +93,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
     private OrderAdapter deliverAdapter;
     private ArrayList<Order> deliveredList;
     private RecyclerView recycler_view_delivered;
+    private String statusVal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +115,9 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
         deliverAdapter = new OrderAdapter(this, deliveredList, this, this);
         loadMore = findViewById(R.id.loadMore);
 
-        // white background notification bar
-        //  whiteNotificationBar(recyclerView);
-
-
+        shopID = getIntent().getStringExtra("shopId");
+        shoName = getIntent().getStringExtra("shopName");
+        role = getIntent().getStringExtra("role");
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         final LinearLayoutManager addManager1 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(addManager1);
@@ -130,19 +134,30 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                 fetchContacts();
             }
         });
-
     }
 
     private void fetchContacts() {
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                ORDER_GET_ALL, new Response.Listener<String>() {
+        if (getIntent().getStringExtra("status") != null) {
+            statusVal = getIntent().getStringExtra("status");
+        } else {
+            statusVal = "";
+        }
+        String shopId = null;
+        if ("Admin".equalsIgnoreCase(role)) {
+            shopId = "Admin";
+        } else {
+            shopId = shopID;
+        }
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                ORDER + "?offset=" + offset * 10 + "" + "&status=" + statusVal
+                        + "&shopid=" + shopId, new Response.Listener<String>() {
+
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
-
                 try {
                     JSONObject jObj = new JSONObject(response);
                     int success = jObj.getInt("success");
@@ -165,22 +180,30 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                                 order.setName(jsonObject.getString("name"));
                                 order.setPhone(jsonObject.getString("phone"));
                                 order.setAddress(jsonObject.getString("address"));
+                                order.setCashback(jsonObject.getString("cashback"));
+                                order.setCouponAmt(jsonObject.getString("couponCost"));
+                                order.setWalletAmt(jsonObject.getString("wallet"));
+
                                 order.setReson(jsonObject.getString("reason"));
                                 order.setCreatedOn(jsonObject.getString("createdon"));
                                 if (!jsonObject.isNull("shopname")) {
                                     order.setShopname(jsonObject.getString("shopname"));
                                 }
+                                if (!jsonObject.isNull("paymentId")) {
+                                    order.setPaymentId(jsonObject.getString("paymentId"));
+                                }
                                 order.setTotal(jsonObject.getString("total"));
                                 order.setDcharge(jsonObject.getString("dcharge"));
                                 order.setPincode(jsonObject.getString("pincode"));
+                                order.setUser(jsonObject.getString("user"));
                                 order.setDtime(jsonObject.getString("dtime"));
-                                            ObjectMapper mapper = new ObjectMapper();
-                                            Object listBeans = new Gson().fromJson(jsonObject.getString("items"),
-                                                    Object.class);
-                                            ArrayList<Product> accountList = mapper.convertValue(
-                                                    listBeans,
-                                                    new TypeReference<ArrayList<Product>>() {
-                                                    }
+                                ObjectMapper mapper = new ObjectMapper();
+                                Object listBeans = new Gson().fromJson(jsonObject.getString("items"),
+                                        Object.class);
+                                ArrayList<Product> accountList = mapper.convertValue(
+                                        listBeans,
+                                        new TypeReference<ArrayList<Product>>() {
+                                        }
                                 );
                                 order.setProductBeans(accountList);
                                 if (order.getStatus().equalsIgnoreCase("ordered")) {
@@ -194,13 +217,13 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                         }
                         mAdapter.notifyData(orderList);
                         deliverAdapter.notifyData(deliveredList);
-                        getSupportActionBar().setSubtitle("Orders - " + orderList.size());
+                        getSupportActionBar().setSubtitle("Orders - " + deliveredList.size());
 
                     } else {
                         Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), "Some Network Error.Try after some time 1", Toast.LENGTH_SHORT).show();
 
                 }
                 hideDialog();
@@ -211,17 +234,13 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideDialog();
-                // Log.e("Registration Error: ", error.getMessage());
+                Log.e("Registration Error: ", error.getMessage());
                 Toast.makeText(getApplication(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                        "Some Network Error.Try after some time 3", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("offset", offset * 10 + "");
-                if (getIntent().getStringExtra("status") != null) {
-                    localHashMap.put("status", getIntent().getStringExtra("status"));
-                }
                 return localHashMap;
             }
         };
@@ -231,37 +250,10 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // filter recycler view when query submitted
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
         return true;
     }
 
@@ -284,12 +276,13 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
 
     @Override
     public void onBackPressed() {
-        // close search view on back button pressed
+      /*  // close search view on back button pressed
         if (!searchView.isIconified()) {
             searchView.setIconified(true);
             return;
-        }
+        }*/
         super.onBackPressed();
+
     }
 
     private void whiteNotificationBar(View view) {
@@ -377,8 +370,8 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                DELIVERY_GET_ALL, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                DELIVERYBOY + "?status=active", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -407,7 +400,6 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("status", "active");
                 return localHashMap;
             }
         };
@@ -439,7 +431,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
 
                 } catch (JSONException e) {
                     Log.e("xxxxxxxxxxx", e.toString());
-                    Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), "Some Network Error.Try after some time 4", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -450,7 +442,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                 hideDialog();
                 Log.e("Registration Error: ", error.getMessage());
                 Toast.makeText(getApplication(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                        "Some Network Error.Try after some time 5", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
@@ -556,12 +548,141 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
         printFunction(MainActivityOrder.this, position);
     }
 
+    @Override
+    public void wallet(Order order) {
+        showCashBack(order);
+    }
+
+    private void showCashBack(final Order order) {
+        final RoundedBottomSheetDialog mBottomSheetDialog = new RoundedBottomSheetDialog(MainActivityOrder.this);
+        LayoutInflater inflater = MainActivityOrder.this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.bottom_amount_layout, null);
+
+        TextInputLayout reviewTxt = dialogView.findViewById(R.id.walletTxt);
+        final TextInputEditText walletEdit = dialogView.findViewById(R.id.wallet);
+        final TextInputEditText description = dialogView.findViewById(R.id.description);
+
+
+        final RadioButton radioIn = dialogView.findViewById(R.id.radioIn);
+        final RadioButton radioOut = dialogView.findViewById(R.id.radioOut);
+        radioIn.setChecked(true);
+
+        radioIn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    radioIn.setChecked(true);
+                    radioOut.setChecked(false);
+                } else {
+                    radioIn.setChecked(false);
+                    radioOut.setChecked(true);
+                }
+            }
+        });
+        radioOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    radioIn.setChecked(false);
+                    radioOut.setChecked(true);
+                } else {
+                    radioIn.setChecked(true);
+                    radioOut.setChecked(false);
+                }
+            }
+        });
+
+        final Button submit = dialogView.findViewById(R.id.submit);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (walletEdit.getText().toString().length() <= 0 ||
+                        description.getText().toString().length() <= 0) {
+                    Toast.makeText(MainActivityOrder.this, "Enter Valid Cashback", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    updateWallet(order.getUser(), walletEdit.getText().toString(), description.getText().toString(),
+                            radioIn.isChecked(), order.id, mBottomSheetDialog);
+                }
+            }
+        });
+        mBottomSheetDialog.setContentView(dialogView);
+        walletEdit.requestFocus();
+        mBottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mBottomSheetDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RoundedBottomSheetDialog d = (RoundedBottomSheetDialog) dialog;
+                        FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                }, 0);
+            }
+        });
+        mBottomSheetDialog.show();
+    }
+
+    private void updateWallet(final String userId, final String wallet, final String description, final boolean isCredit,
+                              final String orderId, final RoundedBottomSheetDialog mBottomSheetDialog) {
+        String tag_string_req = "req_register";
+        showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                WALLET, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                hideDialog();
+                Log.d("Register Response: ", response);
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
+                    int success = jObj.getInt("success");
+                    if (success == 1) {
+                        if (mBottomSheetDialog != null) {
+                            mBottomSheetDialog.cancel();
+                        }
+                        offset = 0;
+                        fetchContacts();
+                    }
+                } catch (JSONException e) {
+                    Log.e("xxxxxxxxxxx", e.toString());
+                    Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hideDialog();
+                Log.e("Registration Error: ", error.getMessage());
+                Toast.makeText(getApplication(),
+                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                HashMap localHashMap = new HashMap();
+                localHashMap.put("userId", userId);
+                localHashMap.put("amt", wallet);
+                localHashMap.put("description", description);
+                localHashMap.put("credit", isCredit ? "add" : "minus");
+                localHashMap.put("orderId", orderId);
+                return localHashMap;
+            }
+        };
+        strReq.setRetryPolicy(Appconfig.getPolicy());
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
 
     private void statusChange(final String id, final String status, final String reason) {
         String tag_string_req = "req_register";
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                ORDER_CHANGE_STATUS, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.PUT,
+                ORDER, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -576,7 +697,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
                     }
                 } catch (JSONException e) {
                     Log.e("xxxxxxxxxxx", e.toString());
-                    Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), "Some Network Error.Try after some time 6", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -586,7 +707,7 @@ public class MainActivityOrder extends AppCompatActivity implements OrderAdapter
             public void onErrorResponse(VolleyError error) {
                 Log.e("Registration Error: ", error.getMessage());
                 Toast.makeText(getApplication(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                        "Some Network Error.Try after some time 7", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {

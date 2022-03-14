@@ -1,14 +1,18 @@
 package pro.network.adminneyvelimart.order;
 
+import static pro.network.adminneyvelimart.app.Appconfig.TRACK;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,12 +33,10 @@ import java.util.Map;
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 
-import static pro.network.adminneyvelimart.app.Appconfig.TRACK_PRODUCT_ORDER_ID;
-
 public class Order_TimelineActivity extends AppCompatActivity {
 
-    private RecyclerView recycler;
     ProgressDialog progressDialog;
+    private RecyclerView recycler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,8 +49,8 @@ public class Order_TimelineActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Track Order");
 
-        recycler = (RecyclerView) findViewById(R.id.recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this,  LinearLayoutManager.VERTICAL, false));
+        recycler = findViewById(R.id.recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         fetchStatus();
 
@@ -59,18 +61,17 @@ public class Order_TimelineActivity extends AppCompatActivity {
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                TRACK_PRODUCT_ORDER_ID, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                TRACK + "?id=" + getIntent().getStringExtra("id"), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
-
                 try {
                     JSONObject jObj = new JSONObject(response);
                     int success = jObj.getInt("success");
                     if (success == 1) {
                         JSONArray jsonArray = jObj.getJSONArray("data");
-                        ArrayList<TrackOrder_Sub> orderList=new ArrayList<>();
+                        ArrayList<TrackOrder_Sub> orderList = new ArrayList<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             TrackOrder_Sub trackOrder = new TrackOrder_Sub();
@@ -78,7 +79,7 @@ public class Order_TimelineActivity extends AppCompatActivity {
                             trackOrder.setDescription(jsonObject.getString("description"));
                             trackOrder.setCreatedon(jsonObject.getString("createdon"));
                             orderList.add(trackOrder);
-                          }
+                        }
                         Order_TimelineAdapter adapter = new Order_TimelineAdapter(LinearLayoutManager.VERTICAL, orderList);
                         recycler.setAdapter(adapter);
                         getSupportActionBar().setSubtitle("Orders Id #" + getIntent().getStringExtra("id"));
@@ -99,14 +100,12 @@ public class Order_TimelineActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideDialog();
-                // Log.e("Registration Error: ", error.getMessage());
                 Toast.makeText(getApplication(),
                         "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("id", getIntent().getStringExtra("id"));
                 return localHashMap;
             }
         };
@@ -128,12 +127,13 @@ public class Order_TimelineActivity extends AppCompatActivity {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Associate searchable configuration with the SearchView
-
+ /*       getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setVisibility(View.GONE);*/
         return true;
     }
 
@@ -146,15 +146,13 @@ public class Order_TimelineActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             finish();
         }
-        //noinspection SimplifiableIfStatement
 
+        //noinspection SimplifiableIfStatement
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        // close search view on back button pressed
-
         super.onBackPressed();
     }
 

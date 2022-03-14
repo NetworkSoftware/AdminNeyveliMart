@@ -1,5 +1,7 @@
 package pro.network.adminneyvelimart.shopreg;
 
+import static pro.network.adminneyvelimart.app.Appconfig.SHOP;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +37,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialog;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -64,29 +68,29 @@ import pro.network.adminneyvelimart.app.GlideApp;
 import pro.network.adminneyvelimart.app.Imageutils;
 import pro.network.adminneyvelimart.product.ImageClick;
 
-import static pro.network.adminneyvelimart.app.Appconfig.CREATE_SHOP;
-
 /**
  * Created by user_1 on 11-07-2018.
  */
 
-public class ShopRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener{
+public class ShopRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener {
 
-
-    EditText shop_name, phone, latlong;
-    MaterialBetterSpinner stock_update;
-    private ImageView profiletImage;
-    Imageutils imageutils;
-    private String imageUrl = "";
-    TextView submit;
-    private ProgressDialog pDialog;
     private final String[] STOCKUPDATE = new String[]{
             "Available", "Currently Unavailable",
     };
     public Button addSize;
+    String shopId = null;
+    EditText shop_name, phone, latlong, password;
+    MaterialBetterSpinner stock_update;
+    Imageutils imageutils;
+    TextView submit;
     ArrayList<Time> times = new ArrayList<>();
     TimeAdapter timeAdapter;
+    private ImageView profiletImage;
+    private String imageUrl = "";
+    private ProgressDialog pDialog;
     private RecyclerView sizelist;
+    private Shop contact = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +101,7 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         pDialog.setCancelable(false);
         latlong = findViewById(R.id.latlong);
         shop_name = findViewById(R.id.shop_name);
+        password = findViewById(R.id.password);
         phone = findViewById(R.id.phone);
         stock_update = findViewById(R.id.stock_update);
         ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this,
@@ -108,7 +113,7 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
             }
         });
         imageutils = new Imageutils(this);
-        profiletImage = (ImageView) findViewById(R.id.profiletImage);
+        profiletImage = findViewById(R.id.profiletImage);
         profiletImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +121,7 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
             }
         });
 
-         addSize = findViewById(R.id.addSize);
+        addSize = findViewById(R.id.addSize);
         addSize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +157,8 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
                     phone.setError("Select the Phone");
                 } else if (latlong.getText().toString().length() <= 0) {
                     latlong.setError("Enter the correct Location");
+                } else if (password.getText().toString().length() <= 0) {
+                    password.setError("Enter the Password");
                 } else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
                 } else if (times.size() <= 0) {
@@ -163,7 +170,41 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
             }
         });
 
-
+        try {
+            contact = (Shop) getIntent().getSerializableExtra("data");
+            shop_name.setText(contact.shop_name);
+            imageUrl = contact.image;
+            GlideApp.with(ShopRegister.this).load(contact.image)
+                    .placeholder(R.drawable.ic_add_a_photo_black_24dp)
+                    .into(profiletImage);
+            phone.setText(contact.phone);
+            latlong.setText(contact.latlong);
+            password.setText(contact.password);
+            shopId = contact.id;
+            stock_update.setText(contact.stock_update);
+            if (contact.getTime_schedule() == null || contact.getTime_schedule().equalsIgnoreCase("null")) {
+                times = new ArrayList<>();
+            } else {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    Object listBeans = new Gson().fromJson(contact.getTime_schedule(),
+                            Object.class);
+                    times = mapper.convertValue(
+                            listBeans,
+                            new TypeReference<ArrayList<Time>>() {
+                            }
+                    );
+                } catch (Exception e) {
+                    Log.e("xxxxxxxxxx", e.toString());
+                }
+            }
+            if (times == null) {
+                times = new ArrayList<>();
+            }
+            timeAdapter.notifyData(times);
+        } catch (Exception e) {
+            Log.e("xxxxxxxxxxx", e.toString());
+        }
     }
 
     private void showDaysBottom(int position) {
@@ -221,40 +262,6 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
             }
         });
 
-       /* openHoursEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int mHour = c.get(Calendar.HOUR_OF_DAY);
-                int mMinute = c.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(ShopRegister.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                openHoursEdit.setText(hourOfDay + "." + minute);
-                            }
-                        }, mHour, mMinute, true);
-                timePickerDialog.show();
-            }
-        });
-        closeHoursEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int mHour = c.get(Calendar.HOUR_OF_DAY);
-                int mMinute = c.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(ShopRegister.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                closeHoursEdit.setText(hourOfDay + "." + minute);
-                            }
-                        }, mHour, mMinute, true);
-                timePickerDialog.show();
-            }
-        });*/
         final Button submit = dialogView.findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -312,8 +319,13 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         String tag_string_req = "req_register";
         pDialog.setMessage("Uploading ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                CREATE_SHOP, new Response.Listener<String>() {
+        int method = Request.Method.POST;
+        if (shopId != null) {
+            method = Request.Method.PUT;
+        }
+        String url = SHOP;
+        StringRequest strReq = new StringRequest(method,
+                url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -344,10 +356,13 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-
+                if (contact != null) {
+                    localHashMap.put("id", shopId);
+                }
                 localHashMap.put("shop_name", shop_name.getText().toString());
                 localHashMap.put("image", imageUrl);
                 localHashMap.put("phone", phone.getText().toString());
+                localHashMap.put("password", password.getText().toString());
                 localHashMap.put("latlong", latlong.getText().toString());
                 localHashMap.put("stock_update", stock_update.getText().toString());
                 localHashMap.put("time_schedule", new Gson().toJson(times));
@@ -375,22 +390,32 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         super.onPause();
         hideDialog();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
+
     @Override
     public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
         String path = getCacheDir().getPath() + File.separator + "ImageAttach" + File.separator;
-        String storedPath=imageutils.createImage(file, filename, path, false);
+        String storedPath = imageutils.createImage(file, filename, path, false);
         pDialog.setMessage("Uploading...");
         showDialog();
         new ShopRegister.UploadFileToServer().execute(Appconfig.
-                compressImage(storedPath,ShopRegister.this));
+                compressImage(storedPath, ShopRegister.this));
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageutils.onActivityResult(requestCode, resultCode, data);
+
+    }
+
     private class UploadFileToServer extends AsyncTask<String, Integer, String> {
-        String filepath;
         public long totalSize = 0;
+        String filepath;
 
         @Override
         protected void onPreExecute() {
@@ -402,7 +427,7 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            pDialog.setMessage("Uploading..." + (String.valueOf(progress[0])));
+            pDialog.setMessage("Uploading..." + (progress[0]));
         }
 
         @Override
@@ -463,14 +488,14 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         protected void onPostExecute(String result) {
             Log.e("Response from server: ", result);
             try {
-                JSONObject jsonObject = new JSONObject(result.toString());
+                JSONObject jsonObject = new JSONObject(result);
                 if (!jsonObject.getBoolean("error")) {
                     GlideApp.with(getApplicationContext())
                             .load(filepath)
                             .dontAnimate()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false)
-                            .placeholder(R.drawable.nanjilmart)
+                            .placeholder(R.drawable.neyvelimart)
                             .into(profiletImage);
                     imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {
@@ -488,12 +513,6 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
 
             super.onPostExecute(result);
         }
-
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        imageutils.onActivityResult(requestCode, resultCode, data);
 
     }
 

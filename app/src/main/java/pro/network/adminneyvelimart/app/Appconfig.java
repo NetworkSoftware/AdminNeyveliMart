@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,51 +30,45 @@ public class Appconfig {
     //Key values
     public static final String shopIdKey = "shopIdKey";
     public static final String mypreference = "mypref";
+    public static final String isLogin = "isLoginKey";
+    public static final String shopId = "SHOPID";
+    public static final String shopName = "SHOPNAME";
+    public static final String shopPhone = "SHOPPHONE";
+    public static final String role = "role";
 
-     public static final String ip = "http://192.168.1.204:8120/prisma/neyvelimart";
-  //  public static final String ip = "http://thestockbazaar.com/prisma/neyvelimart";
+    // public static final String ip = "http://172.20.10.9:8120/prisma/neyvelimart";
+    //  public static final String ip = "http://192.168.1.204:8120/prisma/neyvelimart";
+    public static final String ip = "http://networkgroups.in/prisma/neyvelimart";
 
     //Stack
     public static final String STOCK = ip + "/stock";
     //Categories
-    public static final String CATEGORIES_CREATE = ip + "/create_category";
-    public static final String CATEGORIES_UPDATE = ip + "/update_category";
-    public static final String CATEGORIES_DELETE = ip + "/delete_category";
-    public static final String CATEGORIES_GET_ALL = ip + "/get_all_category";
+    public static final String CATEGORIES = ip + "/category";
     public static final String NEWS_CREATE = ip + "/news";
     //Banner
-    public static final String BANNERS_CREATE = ip + "/create_banner";
-    public static final String BANNERS_GET_ALL = ip + "/dataFetchAll_banner";
-    public static final String BANNERS_DELETE = ip + "/delete_banner";
-    public static final String BANNERS_UPDATE = ip + "/banner";
+    public static final String BANNERS = ip + "/banner";
     //Order
-    public static final String ORDER_GET_ALL = ip + "/dataFetchAll_order";
-    public static final String ORDER_CHANGE_STATUS = ip + "/order_change_status";
-    public static final String TRACK_PRODUCT_ORDER_ID = ip + "/track_order_id";
-    public static final String ASSIGN_DBOY = ip + "/assign_dboy";
-    //public static final String TRACK_PRODUCT_ORDER_ID = ip + "/com_track_order_id.php";
+    public static final String ORDER = ip + "/order";
+    public static final String TRACK = ip + "/track";
     public static final String ORDER_ASSIGN_DBOY = ip + "/order_assign_dboy";
     //Video
     public static final String VIDEO = ip + "/video";
-
-
     //Shop
-    public static final String CREATE_SHOP = ip + "/create_shop";
-    public static final String DELETE_SHOP = ip + "/delete_shop";
-    public static final String UPDATE_SHOP = ip + "/update_shop";
-    public static final String DATA_FETCH_ALL_SHOP = ip + "/dataFetchAll_shop";
+    public static final String SHOP = ip + "/shop";
+    public static final String SHOP_LOGIN = ip + "/shop_login";
     //DeliveryBoy
-    public static final String DELIVERY_GET_ALL = ip + "/get_all_delivery";
-    public static final String CREATE_DELIVERYBOY = ip + "/delivery_register";
-    public static final String UPDATE_DELIVERYBOY = ip + "/update_deliveryboy";
-    public static final String DELETE_DELIVERYBOY = ip + "/delete_deliveryboy";
-    public static final String DELIVERY_BOY_CHANGE_STATUS = ip + "/delivery_boy_change_status";
+    public static final String DELIVERYBOY = ip + "/deliveryboy";
+    public static final String DBOYSTATUS = ip + "/dboy_status";
+    //
+    public static final String COUPON = ip + "/coupon";
+    public static final String WALLET = ip + "/wallet";
+    public static final String USER = ip + "/user";
+
     public static final String IMAGE_URL = ip + "/images/";
     public static String URL_IMAGE_UPLOAD = ip + "/fileUpload";
     public static String BANNER_CREATE = ip + "/fileFeed";
     public static String BANNER_GET_ALL = ip + "/get_all_feed";
     public static String BANNER_DELETE = ip + "/fileDelete";
-    public static Glide locationMap;
     public static Map<String, String[]> stringMap = new HashMap<String, String[]>() {{
         put("Fashion", new String[]{});
         put("COSMETICS", new String[]{"Eye Liner", "Lipstic", "All Makeup Kits"});
@@ -90,7 +83,7 @@ public class Appconfig {
     public static String[] COSMETICS = new String[]{
             "Eye Liner", "Lipstic", "All Makeup Kits",
     };
-    public static String[] SHOPNAME = new String[]{
+    public static String[] SINGLESHOPNAME = new String[]{
             "Eye Liner", "Lipstic", "All Makeup Kits",
     };
 

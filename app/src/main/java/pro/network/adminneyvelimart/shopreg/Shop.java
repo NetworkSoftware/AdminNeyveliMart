@@ -11,7 +11,7 @@ public class Shop implements Serializable {
     String stock_update;
     String latlong;
     String image;
-    String time_schedule;
+    String time_schedule,password;
     ArrayList<Time> times;
 
     public Shop() {
@@ -90,5 +90,13 @@ public class Shop implements Serializable {
 
     public void setTimes(ArrayList<Time> times) {
         this.times = times;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

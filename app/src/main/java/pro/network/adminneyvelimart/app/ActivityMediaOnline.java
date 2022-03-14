@@ -32,7 +32,7 @@ public class ActivityMediaOnline extends AppCompatActivity {
             this.imgPreview.setVisibility(View.VISIBLE);
 
             GlideApp.with(ActivityMediaOnline.this).
-                    load(filePath).placeholder(R.drawable.nanjilmart).into(imgPreview);
+                    load(filePath).placeholder(R.drawable.neyvelimart).into(imgPreview);
 
             return;
         }

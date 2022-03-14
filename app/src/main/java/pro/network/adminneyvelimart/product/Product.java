@@ -19,6 +19,7 @@ public class Product implements Serializable {
     String stock_update;
     String userId;
     String sub_category;
+    String createdon;
     public String shopname;
     public String shopid;
     public String latlong;
@@ -160,5 +161,13 @@ public class Product implements Serializable {
 
     public void setLatlong(String latlong) {
         this.latlong = latlong;
+    }
+
+    public String getCreatedon() {
+        return createdon;
+    }
+
+    public void setCreatedon(String createdon) {
+        this.createdon = createdon;
     }
 }
