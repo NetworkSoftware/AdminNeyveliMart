@@ -4,13 +4,14 @@ import static pro.network.adminneyvelimart.app.Appconfig.DELIVERYBOY;
 import static pro.network.adminneyvelimart.app.Appconfig.ORDER;
 import static pro.network.adminneyvelimart.app.Appconfig.ORDER_ASSIGN_DBOY;
 import static pro.network.adminneyvelimart.app.Appconfig.WALLET;
+import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -94,6 +95,7 @@ public class MainActivityOrder extends AppCompatActivity
     private ArrayList<Order> deliveredList;
     private RecyclerView recycler_view_delivered;
     private String statusVal;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,18 +103,22 @@ public class MainActivityOrder extends AppCompatActivity
         setContentView(R.layout.activity_mainorder);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-
+        sharedPreferences = getSharedPreferences(mypreference,
+                Context.MODE_PRIVATE);
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.order);
 
         recyclerView = findViewById(R.id.recycler_view);
         orderList = new ArrayList<>();
-        mAdapter = new OrderAdapter(this, orderList, this, this);
+        mAdapter = new OrderAdapter(this, orderList,
+                this, this,sharedPreferences);
+
 
         recycler_view_delivered = findViewById(R.id.recycler_view_delivered);
         deliveredList = new ArrayList<>();
-        deliverAdapter = new OrderAdapter(this, deliveredList, this, this);
+        deliverAdapter = new OrderAdapter(this, deliveredList,
+                this, this,sharedPreferences);
         loadMore = findViewById(R.id.loadMore);
 
         shopID = getIntent().getStringExtra("shopId");
@@ -212,12 +218,12 @@ public class MainActivityOrder extends AppCompatActivity
                                     deliveredList.add(order);
                                 }
                             } catch (Exception e) {
-
                             }
                         }
                         mAdapter.notifyData(orderList);
                         deliverAdapter.notifyData(deliveredList);
-                        getSupportActionBar().setSubtitle("Orders - " + deliveredList.size());
+                        int valTotal = orderList.size() + deliveredList.size();
+                        getSupportActionBar().setSubtitle("Orders - " + valTotal);
 
                     } else {
                         Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();

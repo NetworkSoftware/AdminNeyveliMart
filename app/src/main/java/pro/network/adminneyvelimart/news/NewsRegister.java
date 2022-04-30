@@ -130,7 +130,6 @@ public class NewsRegister extends AppCompatActivity {
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
                 }
-
             }
         }, new Response.ErrorListener() {
 

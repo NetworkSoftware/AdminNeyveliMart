@@ -59,6 +59,16 @@
                     android:gravity="left"
                     android:text="Cashback"
                     android:textColor="@android:color/black" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sans_bold"
+                    android:gravity="left"
+                    android:text="Delivery Charge"
+                    android:textColor="@android:color/black" />
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -81,32 +91,38 @@
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/desTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginRight="10dp"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
+                    android:visibility="visible"
                     android:text="Description"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/nameTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginRight="10dp"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
+                    android:visibility="visible"
                     android:text="Name"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/phoneTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginRight="10dp"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
+                    android:visibility="visible"
                     android:text="Phone"
                     android:textColor="@android:color/black" />
 
@@ -177,6 +193,15 @@
                     android:gravity="left"
                     android:text="COD" />
                 <TextView
+                    android:id="@+id/dCharge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="15dp"
+                    android:fontFamily="@font/sans_bold"
+                    android:gravity="left"
+                    android:text="COD" />
+                <TextView
                     android:id="@+id/price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -194,13 +219,14 @@
                     android:layout_marginLeft="15dp"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
-                    android:text="2020-09-19" />
+                    android:text="2020-09-19"/>
                 <TextView
                     android:id="@+id/reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginLeft="15dp"
+                    android:visibility="visible"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
                     android:text="2020-09-19" />
@@ -211,6 +237,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginLeft="15dp"
+                    android:visibility="visible"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
                     android:text="2020-09-19" />
@@ -221,6 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_marginLeft="15dp"
+                    android:visibility="visible"
                     android:fontFamily="@font/sans_bold"
                     android:gravity="left"
                     android:text="2020-09-19" />
