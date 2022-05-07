@@ -58,7 +58,7 @@ public class PdfConfig {
         table1.setWidthPercentage(100);
         table1.setWidths(new int[]{1});
 
-        table1.addCell(createTextCellCenter("Neyveli Mart\nPh:919994526713", nameFont, true));
+        table1.addCell(createTextCellCenter(mainbean.getProductBeans()+"\nPh:919994526713", nameFont, true));
 
         table1.setSplitLate(false);
         document.add(table1);
@@ -84,16 +84,16 @@ public class PdfConfig {
         table3.setWidths(new float[]{0.5f, 2f, 0.5f, 1});
         table3.addCell(createTextLeft("SNo", catFont, false));
         table3.addCell(createTextLeft("Name", catFont, false));
-        table3.addCell(createTextLeft("Qty", catFont, false));
-        table3.addCell(createTextLeft("Price", catFont, false));
+        table3.addCell(createTextRight("Qty", catFont));
+        table3.addCell(createTextRight("Price", catFont));
 
         for (int i = 0; i < mainbean.getProductBeans().size(); i++) {
             table3.addCell(createTextLeft((i + 1) + "", catNormalFont, false));
             Product productListBean = mainbean.getProductBeans().get(i);
             table3.addCell(createTextLeft(productListBean.getBrand() + "_" + productListBean.getModel()
                     +"\n"+"Shop-" + productListBean.shopname, catNormalFont, false));
-            table3.addCell(createTextLeft(productListBean.getQty(), catNormalFont, false));
-            table3.addCell(createTextLeft(productListBean.getPrice(), catNormalFont, false));
+            table3.addCell(createTextRight(productListBean.getQty(), catNormalFont));
+            table3.addCell(createTextRight(productListBean.getPrice()+".00", catNormalFont));
         }
 
 
@@ -108,33 +108,36 @@ public class PdfConfig {
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Total", catNormalFont));
-        table7.addCell(createTextLeft(mainbean.getTotal(), catNormalFont, false));
+        table7.addCell(createTextRight(mainbean.getTotal(), catNormalFont));
 
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Delivery Fee", catNormalFont));
-        table7.addCell(createTextLeft(mainbean.getDcharge(), catNormalFont, false));
+        table7.addCell(createTextRight("₹35.00", catNormalFont));
 
-        table7.addCell(createTextLeft("", catNormalFont, false));
-        table7.addCell(createTextLeft("", catNormalFont, false));
-        table7.addCell(createTextRight("Wallet Amount", catNormalFont));
-        table7.addCell(createTextLeft(mainbean.getWalletAmt(), catNormalFont, false));
+//        table7.addCell(createTextLeft("", catNormalFont, false));
+//        table7.addCell(createTextLeft("", catNormalFont, false));
+//        table7.addCell(createTextRight("Wallet Amount", catNormalFont));
+//        table7.addCell(createTextRight("₹35.00", catNormalFont));
 
 
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Coupon Amount", catNormalFont));
-        table7.addCell(createTextLeft(mainbean.getCouponAmt(), catNormalFont, false));
+        table7.addCell(createTextRight(mainbean.getCouponAmt(), catNormalFont));
 
-        table7.addCell(createTextLeft("", catNormalFont, false));
-        table7.addCell(createTextLeft("", catNormalFont, false));
-        table7.addCell(createTextRight("Packing Charges", catNormalFont));
-        table7.addCell(createTextLeft("₹10.00", catNormalFont, false));
+//        table7.addCell(createTextLeft("", catNormalFont, false));
+//        table7.addCell(createTextLeft("", catNormalFont, false));
+//        table7.addCell(createTextRight("Packing Charges", catNormalFont));
+//        table7.addCell(createTextRight("₹10.00", catNormalFont));
+
+        int totalPrice;
+
 
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Grand Total", catNormalFont));
-        table7.addCell(createTextLeft(mainbean.getPrice(), catNormalFont, false));
+        table7.addCell(createTextRight(mainbean.getPrice(), catNormalFont));
 
         table7.setSplitLate(false);
         document.add(table7);

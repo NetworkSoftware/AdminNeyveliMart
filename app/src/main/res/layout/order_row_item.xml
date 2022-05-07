@@ -39,7 +39,7 @@
                     android:gravity="left"
                     android:text="Order Id "
                     android:textColor="@android:color/black" />
-
+z
 
                 <TextView
                     android:layout_width="match_parent"

@@ -51,6 +51,8 @@ public class StartActivity extends AppCompatActivity {
 
         final EditText phone = findViewById(R.id.phone);
         final EditText password = findViewById(R.id.password);
+        phone.setText("7200072057");
+        password.setText("123456789");
         if ((!("Admin".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))
                 && (!("isClient".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))) {
             phone.setText(sharedpreferences.getString(Appconfig.shopPhone, ""));
@@ -62,8 +64,8 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if ((phone.getText().length() <= 0) && (password.getText().length() <= 0)) {
                     Toast.makeText(getApplicationContext(), "Enter valid phone and password", Toast.LENGTH_SHORT).show();
-                }else if((phone.getText().toString().equalsIgnoreCase("6381510954"))
-                        && (password.getText().toString().equalsIgnoreCase("12344321"))){
+                }else if((phone.getText().toString().equalsIgnoreCase("7200072057"))
+                        && (password.getText().toString().equalsIgnoreCase("123456789"))){
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(Appconfig.role,"Admin");
                     editor.commit();
