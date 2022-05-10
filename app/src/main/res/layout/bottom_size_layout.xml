@@ -89,8 +89,8 @@
                 android:layout_gravity="center"
                 android:backgroundTint="@color/gray"
                 android:hint="In Time"
-                android:inputType="text"
-                android:textAllCaps="false"
+                android:inputType="textCapCharacters"
+                android:textAllCaps="true"
                 android:textColorHint="#c6c6c6"
                 android:textSize="@dimen/textsize" />
 
@@ -110,10 +110,10 @@
                 android:layout_gravity="center"
                 android:backgroundTint="@color/gray"
                 android:hint="Out Time"
-                android:inputType="text"
-                android:textAllCaps="false"
+                android:inputType="textCapCharacters"
+                android:textAllCaps="true"
                 android:textColorHint="#c6c6c6"
-                android:textSize="@dimen/textsize" />
+                android:textSize="@dimen/textsize"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
