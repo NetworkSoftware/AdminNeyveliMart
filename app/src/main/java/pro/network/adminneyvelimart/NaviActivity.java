@@ -2,13 +2,22 @@ package pro.network.adminneyvelimart;
 
 import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -20,6 +29,7 @@ import pro.network.adminneyvelimart.deliveryboy.MainActivityDelivery;
 import pro.network.adminneyvelimart.news.NewsRegister;
 import pro.network.adminneyvelimart.order.MainActivityOrder;
 import pro.network.adminneyvelimart.product.MainActivityProduct;
+import pro.network.adminneyvelimart.settings.SettingsActivity;
 import pro.network.adminneyvelimart.shopreg.MainActivityShop;
 import pro.network.adminneyvelimart.user.MainActivityUsers;
 import pro.network.adminneyvelimart.videos.MainActivityVideo;
@@ -31,7 +41,9 @@ NaviActivity extends AppCompatActivity {
     String shopId = "shopId";
     String shopName = "shopName";
     private SharedPreferences sharedpreferences;
-
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +54,17 @@ NaviActivity extends AppCompatActivity {
         role = getIntent().getStringExtra("role");
         shopId = getIntent().getStringExtra("shopId");
         shopName = getIntent().getStringExtra("shopName");
-
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)  {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+        }
+        CardView setting = findViewById(R.id.setting);
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent io = new Intent(NaviActivity.this, SettingsActivity.class);
+                startActivity(io);
+            }
+        });
         CardView users = findViewById(R.id.users);
         users.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +202,20 @@ NaviActivity extends AppCompatActivity {
             coupon.setVisibility(View.GONE);
         }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
+
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
     private void navOrderPage(String status) {
         Intent io = new Intent(NaviActivity.this, MainActivityOrder.class);

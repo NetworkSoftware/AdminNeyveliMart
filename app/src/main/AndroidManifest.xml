@@ -117,6 +117,10 @@
             android:label="MainActivityCoupon"
             android:theme="@style/AppThemeSe.NoActionBar" />
         <activity
+            android:name=".settings.SettingsActivity"
+            android:label="Setting"
+            android:theme="@style/AppThemewhite" />
+        <activity
             android:name=".coupon.CouponRegister"
             android:label="Coupon Register"
             android:theme="@style/AppThemeWhite" />
