@@ -226,7 +226,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
       //  pDialog.setMessage("Processing ...");
         showDialog();
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                STOCK, new Response.Listener<String>() {
+                STOCK+"?user=true", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 hideDialog();
@@ -270,7 +270,6 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("user","ture");
                 return localHashMap;
             }
         };
