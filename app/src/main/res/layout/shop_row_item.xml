@@ -51,6 +51,15 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
+            <TextView
+                android:id="@+id/shopId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/sans"
+                android:text="0"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/shop_name"

@@ -1,5 +1,6 @@
 package pro.network.adminneyvelimart.shopreg;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private final LinearLayout linear;
         public ImageView  cancel,thumbnail;
-        public TextView shop_name,phone,stock_update,shop_open;
+        public TextView shop_name,phone,stock_update,shop_open,shopId;
 
         public MyViewHolder(View view) {
             super(view);
@@ -37,6 +38,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder> 
             phone = view.findViewById(R.id.phone);
             stock_update = view.findViewById(R.id.stock_update);
             linear=view.findViewById(R.id.linear);
+            shopId = view.findViewById(R.id.shopId);
         }
     }
 
@@ -55,10 +57,12 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         final Shop categories = categoriesList.get(position);
 
         holder.shop_name.setText(categories.shop_name);
+
+        holder.shopId.setText("ShopId : #"+categories.id);
         holder.phone.setText(categories.phone);
         holder.stock_update.setText(categories.stock_update);
         GlideApp.with(context)

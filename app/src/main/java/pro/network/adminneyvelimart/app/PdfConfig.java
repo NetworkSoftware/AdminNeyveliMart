@@ -2,6 +2,7 @@ package pro.network.adminneyvelimart.app;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -58,7 +59,9 @@ public class PdfConfig {
         table1.setWidthPercentage(100);
         table1.setWidths(new int[]{1});
 
-        table1.addCell(createTextCellCenter(mainbean.getProductBeans()+"\nPh:919994526713", nameFont, true));
+        table1.addCell(createTextbottomlow("NEYVELIMART", nameFont, false));
+        table1.addCell(createTextbottomlow("Ph:9181222 74273", catFont, false));
+        table1.addCell(createTextCellCenter(mainbean.getShopname(), catNormalFont, true));
 
         table1.setSplitLate(false);
         document.add(table1);
@@ -198,7 +201,19 @@ public class PdfConfig {
         return cell;
     }
 
-
+    public static PdfPCell createTextbottomlow(String text, Font font, boolean isBorder) throws DocumentException, IOException {
+        PdfPCell cell = new PdfPCell();
+        Paragraph p = new Paragraph(text, font);
+        p.setAlignment(Element.ALIGN_CENTER);
+        cell.addElement(p);
+        cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPaddingBottom(3);
+        if (isBorder) {
+            cell.setCellEvent(new DottedCell(Rectangle.BOTTOM));
+        }
+        return cell;
+    }
     public static PdfPCell createTextCellCenter(String text, Font font, boolean isBorder) throws DocumentException, IOException {
         PdfPCell cell = new PdfPCell();
         Paragraph p = new Paragraph(text, font);

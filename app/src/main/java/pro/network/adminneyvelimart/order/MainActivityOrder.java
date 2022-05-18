@@ -211,6 +211,10 @@ public class MainActivityOrder extends AppCompatActivity
                                         new TypeReference<ArrayList<Product>>() {
                                         }
                                 );
+                                for (int j = 0; j < accountList.size(); j++) {
+                                    order.setShopname(accountList.get(j).shopname);
+                                }
+
                                 order.setProductBeans(accountList);
                                 if (order.getStatus().equalsIgnoreCase("ordered")) {
                                     orderList.add(order);

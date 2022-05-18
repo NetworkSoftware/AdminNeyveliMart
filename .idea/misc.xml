@@ -23,6 +23,7 @@
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/myorders_list_sub.xml" value="0.23854166666666668" />
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/order_row_item.xml" value="0.22314814814814815" />
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/shop_reg.xml" value="0.23854166666666668" />
+        <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/shop_row_item.xml" value="0.23854166666666668" />
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/stock_register.xml" value="0.23854166666666668" />
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/view_users_item.xml" value="0.13489583333333333" />
         <entry key="..\:/StudioProjects/AdminNeyveliMart/app/src/main/res/layout/wallet_row_item.xml" value="0.13489583333333333" />
@@ -32,7 +33,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
