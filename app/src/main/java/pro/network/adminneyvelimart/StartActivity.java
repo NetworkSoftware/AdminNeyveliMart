@@ -3,10 +3,13 @@ package pro.network.adminneyvelimart;
 import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 import static pro.network.adminneyvelimart.app.Appconfig.shopId;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -31,7 +36,6 @@ import java.util.Map;
 
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
-import pro.network.adminneyvelimart.product.MainActivityProduct;
 
 public class StartActivity extends AppCompatActivity {
     ProgressDialog dialog;
@@ -48,11 +52,10 @@ public class StartActivity extends AppCompatActivity {
         Log.d("TOken ", "" + FirebaseInstanceId.getInstance().getToken());
         FirebaseMessaging.getInstance().subscribeToTopic("allDevices");
 
-
         final EditText phone = findViewById(R.id.phone);
         final EditText password = findViewById(R.id.password);
         phone.setText("7200072057");
-        password.setText("123456789");
+        password.setText("1234567890");
         if ((!("Admin".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))
                 && (!("isClient".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))) {
             phone.setText(sharedpreferences.getString(Appconfig.shopPhone, ""));
@@ -64,21 +67,34 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if ((phone.getText().length() <= 0) && (password.getText().length() <= 0)) {
                     Toast.makeText(getApplicationContext(), "Enter valid phone and password", Toast.LENGTH_SHORT).show();
-                }else if((phone.getText().toString().equalsIgnoreCase("7200072057"))
-                        && (password.getText().toString().equalsIgnoreCase("123456789"))){
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString(Appconfig.role,"Admin");
-                    editor.commit();
-                    Intent io = new Intent(StartActivity.this, NaviActivity.class);
-                    io.putExtra("role", "Admin");
-                    startActivity(io);
-                } else {
+                }
+//                else if ((phone.getText().toString().equalsIgnoreCase("7200072057"))
+//                        && (password.getText().toString().equalsIgnoreCase("1234567890"))) {
+//                    FirebaseMessaging.getInstance().subscribeToTopic("allDevices_admin");
+//                    SharedPreferences.Editor editor = sharedpreferences.edit();
+//                    editor.putString(Appconfig.role, "Admin");
+//                    editor.commit();
+//                    Intent io = new Intent(StartActivity.this, NaviActivity.class);
+//                    io.putExtra("role", "Admin");
+//                    startActivity(io);
+//                }
+                else {
                     checkLogin(phone.getText().toString(), password.getText().toString());
                 }
             }
         });
+        checkPermission();
     }
 
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (ContextCompat.checkSelfPermission(StartActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(StartActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            } else {
+
+            }
+        }
+    }
 
     private void checkLogin(final String username, final String password) {
         String tag_string_req = "req_register";
@@ -105,6 +121,9 @@ public class StartActivity extends AppCompatActivity {
                         editor.putString(shopId, user_id);
                         editor.commit();
                         if (!jObj.isNull("role") && jObj.getString("role").equalsIgnoreCase("isClient")) {
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices_admin");
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices");
+                            FirebaseMessaging.getInstance().subscribeToTopic("allDevices_" + user_id);
                             Intent io = new Intent(StartActivity.this, NaviActivity.class);
                             io.putExtra("shopId", user_id);
                             io.putExtra("shopName", name);
@@ -112,6 +131,8 @@ public class StartActivity extends AppCompatActivity {
                             startActivity(io);
                             finish();
                         } else {
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices");
+                            FirebaseMessaging.getInstance().subscribeToTopic("allDevices_admin");
                             Intent io = new Intent(StartActivity.this, NaviActivity.class);
                             io.putExtra("role", role);
                             startActivity(io);

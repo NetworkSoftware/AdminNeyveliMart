@@ -20,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.rahul.media.main.MediaFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -53,7 +52,7 @@ public class MainActivityVideo extends AppCompatActivity implements AdClick, Ima
     List<String> shopList = new ArrayList<>();
     ProgressDialog progressDialog;
     Imageutils imageutils;
-    private MediaFactory mediaFactory;
+   // private MediaFactory mediaFactory;
     private ArrayList<String> all_path;
 
     @Override

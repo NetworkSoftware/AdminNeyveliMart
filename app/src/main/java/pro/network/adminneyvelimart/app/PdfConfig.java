@@ -2,7 +2,6 @@ package pro.network.adminneyvelimart.app;
 
 import android.content.Context;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -94,9 +93,9 @@ public class PdfConfig {
             table3.addCell(createTextLeft((i + 1) + "", catNormalFont, false));
             Product productListBean = mainbean.getProductBeans().get(i);
             table3.addCell(createTextLeft(productListBean.getBrand() + "_" + productListBean.getModel()
-                    +"\n"+"Shop-" + productListBean.shopname, catNormalFont, false));
+                    + "\n" + "Shop-" + productListBean.shopname, catNormalFont, false));
             table3.addCell(createTextRight(productListBean.getQty(), catNormalFont));
-            table3.addCell(createTextRight(productListBean.getPrice()+".00", catNormalFont));
+            table3.addCell(createTextRight("Rs." + productListBean.getMrp() + ".00", catNormalFont));
         }
 
 
@@ -111,12 +110,12 @@ public class PdfConfig {
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Total", catNormalFont));
-        table7.addCell(createTextRight(mainbean.getTotal(), catNormalFont));
+        table7.addCell(createTextRight("Rs." + mainbean.getTotal(), catNormalFont));
 
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
-        table7.addCell(createTextRight("Delivery Fee", catNormalFont));
-        table7.addCell(createTextRight("₹35.00", catNormalFont));
+        table7.addCell(createTextRight("Shipping Charge", catNormalFont));
+        table7.addCell(createTextRight("Rs." + mainbean.getDcharge(), catNormalFont));
 
 //        table7.addCell(createTextLeft("", catNormalFont, false));
 //        table7.addCell(createTextLeft("", catNormalFont, false));
@@ -127,7 +126,7 @@ public class PdfConfig {
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Coupon Amount", catNormalFont));
-        table7.addCell(createTextRight(mainbean.getCouponAmt(), catNormalFont));
+        table7.addCell(createTextRight("Rs." + mainbean.getCouponAmt(), catNormalFont));
 
 //        table7.addCell(createTextLeft("", catNormalFont, false));
 //        table7.addCell(createTextLeft("", catNormalFont, false));
@@ -140,7 +139,7 @@ public class PdfConfig {
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextLeft("", catNormalFont, false));
         table7.addCell(createTextRight("Grand Total", catNormalFont));
-        table7.addCell(createTextRight(mainbean.getPrice(), catNormalFont));
+        table7.addCell(createTextRight("Rs." + mainbean.getPrice(), catNormalFont));
 
         table7.setSplitLate(false);
         document.add(table7);
@@ -158,7 +157,6 @@ public class PdfConfig {
         table5.setSplitLate(false);
         document.add(table5);
     }
-
 
 
     public static PdfPCell createTextRight(String text, Font font) throws DocumentException, IOException {
@@ -214,6 +212,7 @@ public class PdfConfig {
         }
         return cell;
     }
+
     public static PdfPCell createTextCellCenter(String text, Font font, boolean isBorder) throws DocumentException, IOException {
         PdfPCell cell = new PdfPCell();
         Paragraph p = new Paragraph(text, font);

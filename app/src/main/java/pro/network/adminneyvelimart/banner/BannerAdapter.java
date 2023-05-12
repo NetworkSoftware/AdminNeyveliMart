@@ -1,7 +1,9 @@
 package pro.network.adminneyvelimart.banner;
 
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +21,13 @@ import pro.network.adminneyvelimart.app.GlideApp;
  */
 
 public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.MyViewHolder> {
-    private Context context;
+    private final Context context;
     private List<Banner> bannerList;
-    private BannerClick bannerClick;
+    private final BannerClick bannerClick;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView thumbnail, cancel;
-        public TextView description;
+        public TextView description, type;
 
         public MyViewHolder(View view) {
             super(view);
@@ -33,7 +35,8 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.MyViewHold
 
             thumbnail = view.findViewById(R.id.thumbnail);
             cancel = view.findViewById(R.id.cancel);
-            description =(TextView) view.findViewById(R.id.description);
+            type = view.findViewById(R.id.type);
+            description = view.findViewById(R.id.description);
 
         }
     }
@@ -62,6 +65,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.MyViewHold
                 .placeholder(R.drawable.vivo)
                 .into(holder.thumbnail);
         holder.description.setText(banner.getDescription());
+        holder.type.setText(banner.getType());
         holder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

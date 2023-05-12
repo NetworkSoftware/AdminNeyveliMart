@@ -40,6 +40,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -68,7 +69,9 @@ import pro.network.adminneyvelimart.app.ActivityMediaOnline;
 import pro.network.adminneyvelimart.app.AndroidMultiPartEntity;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
+import pro.network.adminneyvelimart.app.GlideApp;
 import pro.network.adminneyvelimart.app.Imageutils;
+import pro.network.adminneyvelimart.banner.BannerRegister;
 
 public class ProductUpdate extends AppCompatActivity implements Imageutils.ImageAttachmentListener, ImageClick {
 
@@ -79,7 +82,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
 
     AutoCompleteTextView brand;
     EditText model;
-    EditText price;
+    EditText price, nmPrice;
     EditText description;
     AddImageAdapter maddImageAdapter;
     MaterialBetterSpinner category;
@@ -129,6 +132,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         shopName = getIntent().getStringExtra("shopName");
         model = findViewById(R.id.model);
         price = findViewById(R.id.price);
+        nmPrice = findViewById(R.id.nmPrice);
         description = findViewById(R.id.description);
         shopname = findViewById(R.id.shopname);
 
@@ -196,13 +200,19 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                     brand.setError("Enter the Brand");
                 } else if (model.getText().toString().length() <= 0) {
                     model.setError("Enter the Model");
-                } else if (price.getText().toString().length() <= 0) {
-                    price.setError("Enter the Price");
+                } else if (price.getText().toString().length() <= 0 ||
+                        price.getText().toString().equalsIgnoreCase("0")) {
+                    price.setError("Enter the MRP");
+                } else if (nmPrice.getText().toString().length() <= 0 ||
+                        nmPrice.getText().toString().equalsIgnoreCase("0")) {
+                    nmPrice.setError("Enter the NMP");
                 } else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
-                } else if (samplesList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Upload the Images!", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+//                else if (samplesList.size() <= 0) {
+//                    Toast.makeText(getApplicationContext(), "Upload the Images!", Toast.LENGTH_SHORT).show();
+//                }
+                else {
 
                     registerUser();
                 }
@@ -215,7 +225,8 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             category.setText(contact.category);
             brand.setText(contact.brand);
             model.setText(contact.model);
-            price.setText(contact.price);
+            price.setText(contact.mrp);
+            nmPrice.setText(contact.nmPrice);
             description.setText(contact.description);
             productId = contact.id;
             stock_update.setText(contact.stock_update);
@@ -289,12 +300,19 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                 }
                 localHashMap.put("brand", brand.getText().toString());
                 localHashMap.put("model", model.getText().toString());
-                localHashMap.put("price", price.getText().toString());
+                localHashMap.put("mrp", price.getText().toString());
+                localHashMap.put("nmPrice", nmPrice.getText().toString());
                 localHashMap.put("stock_update", stock_update.getText().toString());
                 if (contact != null) {
                     localHashMap.put("id", productId);
                 }
-                localHashMap.put("image", new Gson().toJson(samplesList));
+                if (samplesList.isEmpty()) {
+                    samplesList.add("http://networkgroups.in/prisma/neyvelimart/images/1650549845559.jpg");
+                    localHashMap.put("image", new Gson().toJson(samplesList));
+                } else {
+                    localHashMap.put("image", new Gson().toJson(samplesList));
+                }
+
                 localHashMap.put("description", description.getText().toString());
                 return localHashMap;
             }
@@ -402,7 +420,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         hideDialog();
     }
 
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
@@ -419,7 +436,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
 
     @Override
     public void onImageClick(int position) {
-
         Intent localIntent = new Intent(ProductUpdate.this, ActivityMediaOnline.class);
         localIntent.putExtra("filePath", samplesList.get(position));
         localIntent.putExtra("isImage", true);
@@ -544,8 +560,8 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     }
 
     private class UploadFileToServer extends AsyncTask<String, Integer, String> {
-        public long totalSize = 0;
         String filepath;
+        public long totalSize = 0;
 
         @Override
         protected void onPreExecute() {
@@ -620,15 +636,15 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 if (!jsonObject.getBoolean("error")) {
-                    imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                     samplesList.add(imageUrl);
                     maddImageAdapter.notifyData(samplesList);
+                    imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {
                     imageUrl = null;
                 }
                 Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
-            } catch (Error | Exception e) {
+            } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Image not uploaded", Toast.LENGTH_SHORT).show();
             }
             hideDialog();

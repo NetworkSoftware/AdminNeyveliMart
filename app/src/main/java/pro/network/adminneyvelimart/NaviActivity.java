@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
 import pro.network.adminneyvelimart.app.Appconfig;
 import pro.network.adminneyvelimart.banner.MainActivityBanner;
@@ -41,8 +43,8 @@ NaviActivity extends AppCompatActivity {
     String shopId = "shopId";
     String shopName = "shopName";
     private SharedPreferences sharedpreferences;
-    private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ NaviActivity extends AppCompatActivity {
         role = getIntent().getStringExtra("role");
         shopId = getIntent().getStringExtra("shopId");
         shopName = getIntent().getStringExtra("shopName");
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)  {
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         }
         CardView setting = findViewById(R.id.setting);
@@ -191,6 +193,7 @@ NaviActivity extends AppCompatActivity {
             dboy.setVisibility(View.VISIBLE);
             returned.setVisibility(View.VISIBLE);
             coupon.setVisibility(View.VISIBLE);
+            users.setVisibility(View.VISIBLE);
         } else {
             banner.setVisibility(View.GONE);
             catrgories.setVisibility(View.GONE);
@@ -200,19 +203,48 @@ NaviActivity extends AppCompatActivity {
             dboy.setVisibility(View.GONE);
             returned.setVisibility(View.GONE);
             coupon.setVisibility(View.GONE);
+            users.setVisibility(View.GONE);
+        }
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                Log.v("rrr", "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
         }
     }
+
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
+        }
+        switch (requestCode) {
+            case 0:
+                boolean permissionsGranted = true;
+                if (grantResults.length > 0 && permissions.length == grantResults.length) {
+                    for (int i = 0; i < permissions.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            permissionsGranted = false;
+                        }
+                    }
+
+                } else {
+                    permissionsGranted = false;
+                }
+                if (permissionsGranted) {
+                }
+                break;
         }
     }
 

@@ -408,11 +408,11 @@ public class Imageutils {
             items = new CharSequence[2];
             items[0] = "Camera";
             items[1] = "Gallery";
-           // items[2] = "Video";
+            // items[2] = "Video";
         } else {
             items = new CharSequence[1];
             items[0] = "Gallery";
-           // items[1] = "Video";
+            // items[1] = "Video";
         }
 
         android.app.AlertDialog.Builder alertdialog = new android.app.AlertDialog.Builder(current_activity);
@@ -450,10 +450,15 @@ public class Imageutils {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
-                                ActivityCompat.requestPermissions(current_activity,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        code);
+                                if ((ContextCompat.checkSelfPermission(current_activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) ||
+                                        ContextCompat.checkSelfPermission(current_activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                                        ContextCompat.checkSelfPermission(current_activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                                    ActivityCompat.requestPermissions(current_activity, new String[]{Manifest.permission.CAMERA,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+                                }
+//                                ActivityCompat.requestPermissions(current_activity,
+//                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                        code);
                             }
                         });
                 return;
@@ -597,7 +602,6 @@ public class Imageutils {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     galley_call();
                 } else {
-
                     Toast.makeText(current_activity, "Permission denied", Toast.LENGTH_LONG).show();
                 }
                 break;

@@ -77,7 +77,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         final Product product = productListFiltered.get(position);
         holder.brand.setText(product.getBrand());
         holder.model.setText(product.getModel());
-        holder.price.setText("₹ "+product.getPrice());
+        holder.price.setText("₹ "+product.getNmPrice());
         holder.shopname.setText(product.getShopname());
         holder.shopname.setVisibility(View.VISIBLE);
         if(product.getShopname().equalsIgnoreCase("NA")){

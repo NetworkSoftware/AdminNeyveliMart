@@ -11,13 +11,24 @@ public class Banner implements Serializable {
     String banner;
     String description;
     String stockname;
+    String type;
 
     public Banner() {
     }
 
-    public Banner(String banner, String description) {
+    public Banner(String banner, String description, String type) {
         this.banner = banner;
         this.description = description;
+        this.type = type;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() {

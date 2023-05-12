@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +35,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     SharedPreferences sharedPreferences;
 
     public OrderAdapter(Context context, List<Order> orderList, ContactsAdapterListener listener,
-                        StatusListener statusListener,SharedPreferences sharedPreferences) {
+                        StatusListener statusListener, SharedPreferences sharedPreferences) {
         this.context = context;
         this.listener = listener;
         this.orderList = orderList;
@@ -55,20 +56,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Order order = orderListFiltered.get(position);
 
-        if("Admin".equalsIgnoreCase(sharedPreferences.getString(Appconfig.role,""))){
-            holder.phone.setVisibility(View.VISIBLE);
-            holder.name.setVisibility(View.VISIBLE);
+        if ("Admin".equalsIgnoreCase(sharedPreferences.getString(Appconfig.role, ""))) {
+            holder.phoneLi.setVisibility(View.VISIBLE);
+            holder.nameLi.setVisibility(View.VISIBLE);
             holder.reason.setVisibility(View.VISIBLE);
             holder.desTxt.setVisibility(View.VISIBLE);
-            holder.nameTxt.setVisibility(View.VISIBLE);
-            holder.phoneTxt.setVisibility(View.VISIBLE);
         } else {
-            holder.phone.setVisibility(View.GONE);
-            holder.name.setVisibility(View.GONE);
+            holder.phoneLi.setVisibility(View.GONE);
+            holder.nameLi.setVisibility(View.GONE);
             holder.reason.setVisibility(View.GONE);
             holder.desTxt.setVisibility(View.GONE);
-            holder.nameTxt.setVisibility(View.GONE);
-            holder.phoneTxt.setVisibility(View.GONE);
         }
         holder.order_id.setText("#" + order.getId());
         holder.price.setText(order.getPrice());
@@ -79,8 +76,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         holder.dtime.setText(order.getDtime());
         holder.address.setText(order.getAddress());
         holder.reason.setText(order.getReson());
-        holder.orderedOn.setText(Appconfig.convertTimeToLocal(order.createdOn));
- holder.dCharge.setText(order.dcharge);
+        //holder.orderedOn.setText(Appconfig.convertTimeToLocal(order.createdOn));
+        holder.dCharge.setText(order.dcharge);
         if (order.getStatus().equalsIgnoreCase("ordered")) {
             holder.assignDboy.setVisibility(View.VISIBLE);
             holder.cancalOrder.setVisibility(View.VISIBLE);
@@ -234,18 +231,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, price, status, quantity,dCharge,
-                phone,desTxt,nameTxt,phoneTxt, orderedOn, address, dtime, reason,cashback, order_id;
+        public TextView name, price, status, quantity, dCharge,
+                phone, desTxt, nameTxt, phoneTxt, orderedOn, address, dtime, reason, cashback, order_id;
         public ImageView thumbnail;
         public RecyclerView cart_sub_list;
+        LinearLayout nameLi, phoneLi;
         Button deliveredBtn, whatsapp, call, cancalOrder,
                 assignDboy, trackOrder, wallet, inprogress, completed, bill;
 
         public MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
-            orderedOn = view.findViewById(R.id.orderedOn);
-
+            // orderedOn = view.findViewById(R.id.orderedOn);
+            nameLi = view.findViewById(R.id.nameLi);
+            phoneLi = view.findViewById(R.id.phoneLi);
             desTxt = view.findViewById(R.id.desTxt);
             phoneTxt = view.findViewById(R.id.phoneTxt);
             nameTxt = view.findViewById(R.id.nameTxt);

@@ -36,10 +36,9 @@ public class Appconfig {
     public static final String shopPhone = "SHOPPHONE";
     public static final String role = "role";
 
-  //  public static final String ip = "http://192.168.1.233:8120/prisma/neyvelimart";
-    // public static final String ip = "http://172.20.10.9:8120/prisma/neyvelimart";
-   //  public static final String ip = "http://192.168.1.204:8120/prisma/neyvelimart";
-   // public static final String ip = "http://192.168.1.175:8120/prisma/neyvelimart";
+    //  public static final String ip = "http://192.168.1.233:8120/prisma/neyvelimart";
+    //  public static final String ip = "http://172.20.10.9:8120/prisma/neyvelimart";
+    //public static final String ip = "http://192.168.1.204:8120/prisma/neyvelimart";
     public static final String ip = "http://networkgroups.in/prisma/neyvelimart";
 
     //Stack

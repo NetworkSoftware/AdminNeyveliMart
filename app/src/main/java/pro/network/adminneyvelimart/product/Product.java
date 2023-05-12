@@ -10,7 +10,7 @@ public class Product implements Serializable {
     String id;
     String brand;
     String model;
-    String price;
+    String mrp;
     String name;
     String image;
     String description;
@@ -22,10 +22,27 @@ public class Product implements Serializable {
     String createdon;
     public String shopname;
     public String shopid;
-    public String latlong;
+    public String latlong, nmPrice, price;
 
 
     public Product() {
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getNmPrice() {
+        return nmPrice;
+    }
+
+    public void setNmPrice(String nmPrice) {
+        this.nmPrice = nmPrice;
     }
 
     public String getUserId() {
@@ -36,10 +53,10 @@ public class Product implements Serializable {
         this.userId = userId;
     }
 
-    public Product(String brand, String model, String price, String name, String image, String description, String category,String sub_category,String shopname) {
+    public Product(String brand, String model, String mrp, String name, String image, String description, String category, String sub_category, String shopname) {
         this.brand = brand;
         this.model = model;
-        this.price = price;
+        this.mrp = mrp;
         this.name = name;
         this.image = image;
         this.description = description;
@@ -65,7 +82,6 @@ public class Product implements Serializable {
     }
 
 
-
     public String getModel() {
         return model;
     }
@@ -74,12 +90,12 @@ public class Product implements Serializable {
         this.model = model;
     }
 
-    public String getPrice() {
-        return price;
+    public String getMrp() {
+        return mrp;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setMrp(String mrp) {
+        this.mrp = mrp;
     }
 
 

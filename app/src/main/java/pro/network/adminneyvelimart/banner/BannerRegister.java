@@ -10,8 +10,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -56,10 +59,15 @@ import static pro.network.adminneyvelimart.app.Appconfig.STOCK;
  * Created by user_1 on 11-07-2018.
  */
 
-public class  BannerRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener{
+public class BannerRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener {
 
 
     String[] STOCKNAME = new String[]{"Loading"};
+    String[] SUBCATENAME = new String[]{"Loading"};
+    private final String[] BANNERTAGTYPE = new String[]{
+            "Stock", "SubCategory",
+    };
+
     private Map<String, String> nameIdMap = new HashMap<>();
     private ProgressDialog pDialog;
     EditText description;
@@ -71,6 +79,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
     private ImageView profiletImage;
     private String imageUrl = "";
     AutoCompleteTextView stock_name;
+    MaterialBetterSpinner tag_type;
     private Banner banner = null;
 
     @Override
@@ -81,7 +90,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         imageutils = new Imageutils(this);
 
         getSupportActionBar().setTitle("Banner Register");
-        profiletImage = (ImageView) findViewById(R.id.profiletImage);
+        profiletImage = findViewById(R.id.profiletImage);
         profiletImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,13 +99,28 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         });
 
         stock_name = findViewById(R.id.stock_name);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item, STOCKNAME);
-        stock_name.setThreshold(2);
-        stock_name.setAdapter(adapter);
+
+        tag_type = findViewById(R.id.tag_type);
+
+        ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, BANNERTAGTYPE);
+        tag_type.setAdapter(stockAdapter);
+        tag_type.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (BANNERTAGTYPE[position].equalsIgnoreCase("Stock")) {
+                    getAllStocksModel();
+                } else if (BANNERTAGTYPE[position].equalsIgnoreCase("SubCategory")) {
+                    getAllStocksSubCate();
+                }
+                stock_name.setText("");
+            }
+        });
+
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-        getAllStocks();
-        description=(EditText) findViewById(R.id.description);
+
+        description = findViewById(R.id.description);
 
 
         try {
@@ -104,7 +128,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
             stock_name.setText(banner.stockname);
             description.setText(banner.description);
             studentId = banner.id;
-            imageUrl=banner.banner;
+            imageUrl = banner.banner;
             GlideApp.with(BannerRegister.this).load(banner.banner)
                     .placeholder(R.drawable.ic_add_a_photo_black_24dp)
                     .into(profiletImage);
@@ -113,14 +137,14 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
             Log.e("xxxxxxxxxxx", e.toString());
 
         }
-        submit = (TextView) findViewById(R.id.submit);
+        submit = findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (banner != null) {
-                   updateUser();
-                }else {
+                    updateUser();
+                } else {
                     registerUser();
                 }
             }
@@ -137,7 +161,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                 BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("Register Response: ", response.toString());
+                Log.d("Register Response: ", response);
                 hideDialog();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -167,13 +191,19 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                 HashMap localHashMap = new HashMap();
                 localHashMap.put("banner", imageUrl);
                 localHashMap.put("description", description.getText().toString());
-                localHashMap.put("stockname", nameIdMap.get(stock_name.getText().toString()));
+                if (tag_type.getText().toString().equalsIgnoreCase("Stock")) {
+                    localHashMap.put("stockname", nameIdMap.get(stock_name.getText().toString()));
+                } else {
+                    localHashMap.put("stockname", stock_name.getText().toString());
+                }
+                localHashMap.put("type", tag_type.getText().toString());
                 return localHashMap;
             }
         };
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq);
     }
+
     private void updateUser() {
         String tag_string_req = "req_register";
         pDialog.setMessage("Uploading ...");
@@ -182,7 +212,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                 BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("Register Response: ", response.toString());
+                Log.d("Register Response: ", response);
                 hideDialog();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -221,12 +251,12 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    private void getAllStocks() {
+    private void getAllStocksModel() {
         String tag_string_req = "req_register";
-      //  pDialog.setMessage("Processing ...");
+        //  pDialog.setMessage("Processing ...");
         showDialog();
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                STOCK+"?user=true", new Response.Listener<String>() {
+                STOCK + "?user=true", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 hideDialog();
@@ -246,6 +276,17 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                             STOCKNAME[i] = jsonObject.getString("model");
                         }
 
+                        if (stock_name.getText() != null) {
+                            if (tag_type.getText() != null) {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this,
+                                        android.R.layout.select_dialog_item, STOCKNAME);
+                                stock_name.setThreshold(2);
+                                stock_name.setAdapter(adapter);
+                            }
+
+                        }
+
+
                     } else {
                         Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
@@ -254,9 +295,69 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
                     Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
 
                 }
-                ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(BannerRegister.this,
-                        android.R.layout.simple_dropdown_item_1line, STOCKNAME);
-                stock_name.setAdapter(stateAdapter);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Registration Error: ", error.getMessage());
+                Toast.makeText(getApplication(),
+                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                HashMap localHashMap = new HashMap();
+                return localHashMap;
+            }
+        };
+        strReq.setRetryPolicy(Appconfig.getPolicy());
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
+
+    private void getAllStocksSubCate() {
+        String tag_string_req = "req_register";
+        //  pDialog.setMessage("Processing ...");
+        showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.GET,
+                STOCK + "?user=true", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                hideDialog();
+                Log.d("Register Response: ", response);
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    int success = jObj.getInt("success");
+
+                    if (success == 1) {
+                        JSONArray jsonArray = jObj.getJSONArray("data");
+                        SUBCATENAME = new String[jsonArray.length()];
+                        nameIdMap = new HashMap<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            nameIdMap.put(jsonObject.getString("model"),
+                                    jsonObject.getString("id"));
+                            SUBCATENAME[i] = jsonObject.getString("sub_category");
+                        }
+
+                        if (stock_name.getText() != null) {
+                            if (tag_type.getText() != null) {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this,
+                                        android.R.layout.select_dialog_item, SUBCATENAME);
+                                stock_name.setThreshold(2);
+                                stock_name.setAdapter(adapter);
+                            }
+
+                        }
+
+
+                    } else {
+                        Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Log.e("xxxxxxxxxxx", e.toString());
+                    Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -293,6 +394,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         super.onPause();
         hideDialog();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
@@ -302,10 +404,10 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
     public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
         String path = getCacheDir().getPath() + File.separator + "ImageAttach" + File.separator;
         imageutils.createImage(file, filename, path, false);
-        String storedPath=imageutils.createImage(file, filename, path, false);
+        String storedPath = imageutils.createImage(file, filename, path, false);
         pDialog.setMessage("Uploading...");
         showDialog();
-        new UploadFileToServer().execute(Appconfig.compressImage(storedPath,BannerRegister.this));
+        new UploadFileToServer().execute(Appconfig.compressImage(storedPath, BannerRegister.this));
     }
 
     private class UploadFileToServer extends AsyncTask<String, Integer, String> {
@@ -322,7 +424,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            pDialog.setMessage("Uploading..." + (String.valueOf(progress[0])));
+            pDialog.setMessage("Uploading..." + (progress[0]));
         }
 
         @Override
@@ -383,7 +485,7 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
         protected void onPostExecute(String result) {
             Log.e("Response from server: ", result);
             try {
-                JSONObject jsonObject = new JSONObject(result.toString());
+                JSONObject jsonObject = new JSONObject(result);
                 if (!jsonObject.getBoolean("error")) {
                     GlideApp.with(getApplicationContext())
                             .load(filepath)
@@ -415,7 +517,5 @@ public class  BannerRegister extends AppCompatActivity implements Imageutils.Ima
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         imageutils.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-
-
     }
 }

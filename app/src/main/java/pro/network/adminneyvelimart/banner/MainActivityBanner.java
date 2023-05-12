@@ -109,6 +109,11 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
                             if (!jsonObject.isNull("stockname")) {
                                 banner.setStockname(jsonObject.getString("stockname"));
                             }
+                            if (jsonObject.has("type")) {
+                                banner.setType(jsonObject.getString("type"));
+                            } else {
+                                banner.setType("NA");
+                            }
                             bannerList.add(banner);
                         }
                         mAdapter.notifyData(bannerList);

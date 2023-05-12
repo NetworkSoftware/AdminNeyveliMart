@@ -164,7 +164,8 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                             product.setShopname(jsonObject.getString("shopname"));
                             product.setStock_update(jsonObject.getString("stock_update"));
                             product.setDescription(jsonObject.getString("description"));
-                            product.setPrice(jsonObject.getString("price"));
+                            product.setMrp(jsonObject.getString("mrp"));
+                            product.setNmPrice(jsonObject.getString("nmPrice"));
                             product.setModel(jsonObject.getString("model"));
                             product.setImage(jsonObject.getString("image"));
 
@@ -176,7 +177,6 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                             } catch (Exception e) {
                                 Log.e("xxxxxxxxx", e.toString());
                             }
-
                             contactList.add(product);
                         }
                         mAdapter.notifyData(contactList);

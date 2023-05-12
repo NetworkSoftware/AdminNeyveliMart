@@ -79,8 +79,6 @@ import pro.network.adminneyvelimart.product.Product;
 
 public class MainActivityOrder extends AppCompatActivity
         implements OrderAdapter.ContactsAdapterListener, StatusListener {
-    private static final String TAG = MainActivityOrder.class.getSimpleName();
-    private final Set<String> time_Schedule = new HashSet<>();
     ProgressDialog progressDialog;
     Button loadMore;
     int offset = 0;
@@ -106,19 +104,20 @@ public class MainActivityOrder extends AppCompatActivity
         sharedPreferences = getSharedPreferences(mypreference,
                 Context.MODE_PRIVATE);
         // toolbar fancy stuff
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.order);
 
         recyclerView = findViewById(R.id.recycler_view);
         orderList = new ArrayList<>();
         mAdapter = new OrderAdapter(this, orderList,
-                this, this,sharedPreferences);
+                this, this, sharedPreferences);
 
 
         recycler_view_delivered = findViewById(R.id.recycler_view_delivered);
         deliveredList = new ArrayList<>();
         deliverAdapter = new OrderAdapter(this, deliveredList,
-                this, this,sharedPreferences);
+                this, this, sharedPreferences);
         loadMore = findViewById(R.id.loadMore);
 
         shopID = getIntent().getStringExtra("shopId");
@@ -222,6 +221,7 @@ public class MainActivityOrder extends AppCompatActivity
                                     deliveredList.add(order);
                                 }
                             } catch (Exception e) {
+                                Log.e("xxxx", e.toString());
                             }
                         }
                         mAdapter.notifyData(orderList);
@@ -295,14 +295,6 @@ public class MainActivityOrder extends AppCompatActivity
 
     }
 
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-    }
 
     @Override
     public void onContactSelected(Order contact) {

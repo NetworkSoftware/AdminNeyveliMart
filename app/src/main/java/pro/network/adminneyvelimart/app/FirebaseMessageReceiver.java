@@ -26,7 +26,7 @@ import pro.network.adminneyvelimart.order.MainActivityOrder;
 
 
 public class FirebaseMessageReceiver extends FirebaseMessagingService {
-  @Override
+    @Override
 
     public void onMessageReceived(RemoteMessage remoteMessage) {
         //handle when receive notification via data event
@@ -53,14 +53,22 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
 
     public void showNotification(String title, String message) {
         Intent intent = new Intent(this, MainActivityOrder.class);
-        if(message.toLowerCase().contains("ordered")) {
+        if (message.toLowerCase().contains("ordered")) {
             intent.putExtra("status", "ordered");
-        }else if(message.toLowerCase().contains("returned")) {
+        } else if (message.toLowerCase().contains("returned")) {
             intent.putExtra("status", "Returned");
         }
         String channel_id = "web_app_channel";
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity
+                    (this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity
+                    (this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        }
+
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
                 .setSmallIcon(R.drawable.neyvelimart)
