@@ -42,6 +42,8 @@ import static android.content.ContentValues.TAG;
 public class Imageutils {
 
 
+    public String MANAGE_EXTERNAL_STORAGE = Appconfig.returnStoragePermission();
+
     Context context;
     private final Activity current_activity;
     private Fragment current_fragment;
@@ -56,6 +58,8 @@ public class Imageutils {
     private boolean isFragment = false;
 
     public Imageutils(Activity act) {
+
+
 
         this.context = act;
         this.current_activity = act;
@@ -400,6 +404,7 @@ public class Imageutils {
      */
 
     public void imagepicker(final int from) {
+        
         this.from = from;
 
         final CharSequence[] items;
@@ -440,24 +445,24 @@ public class Imageutils {
 
     public void permission_check(final int code) {
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                MANAGE_EXTERNAL_STORAGE);
 
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                   MANAGE_EXTERNAL_STORAGE)) {
 
                 showMessageOKCancel("For adding images , You need to provide permission to access your files",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if ((ContextCompat.checkSelfPermission(current_activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) ||
-                                        ContextCompat.checkSelfPermission(current_activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                                        ContextCompat.checkSelfPermission(current_activity,MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
                                         ContextCompat.checkSelfPermission(current_activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                                     ActivityCompat.requestPermissions(current_activity, new String[]{Manifest.permission.CAMERA,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, code);
+                                           MANAGE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, code);
                                 }
 //                                ActivityCompat.requestPermissions(current_activity,
-//                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                        new String[]{MANAGE_EXTERNAL_STORAGE},
 //                                        code);
                             }
                         });
@@ -465,7 +470,7 @@ public class Imageutils {
             }
 
             ActivityCompat.requestPermissions(current_activity,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{MANAGE_EXTERNAL_STORAGE},
                     code);
             return;
         }
@@ -488,11 +493,11 @@ public class Imageutils {
     public void permission_check_fragment(final int code) {
         Log.d(TAG, "permission_check_fragment: " + code);
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+               MANAGE_EXTERNAL_STORAGE);
 
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                   MANAGE_EXTERNAL_STORAGE)) {
 
                 showMessageOKCancel("For adding images , You need to provide permission to access your files",
                         new DialogInterface.OnClickListener() {
@@ -500,7 +505,7 @@ public class Imageutils {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 current_fragment.requestPermissions(
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        new String[]{MANAGE_EXTERNAL_STORAGE},
                                         code);
                             }
                         });
@@ -508,7 +513,7 @@ public class Imageutils {
             }
 
             current_fragment.requestPermissions(
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{MANAGE_EXTERNAL_STORAGE},
                     code);
             return;
         }

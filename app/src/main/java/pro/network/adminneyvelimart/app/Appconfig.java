@@ -1,5 +1,6 @@
 package pro.network.adminneyvelimart.app;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -227,6 +229,14 @@ public class Appconfig {
         String uriSting = (file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg");
         return uriSting;
 
+    }
+
+    public static String returnStoragePermission(){
+        if(Build.VERSION.SDK_INT >= 33){
+             return  "android.permission.READ_MEDIA_IMAGES";
+        }else{
+            return Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
     }
 
     public static boolean isDeviceSupportCamera(Context context) {

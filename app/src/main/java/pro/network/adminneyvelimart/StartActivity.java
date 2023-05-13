@@ -50,7 +50,7 @@ public class StartActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
         Log.d("TOken ", "" + FirebaseInstanceId.getInstance().getToken());
-        FirebaseMessaging.getInstance().subscribeToTopic("allDevices");
+        //FirebaseMessaging.getInstance().subscribeToTopic("allDevices");
 
         final EditText phone = findViewById(R.id.phone);
         final EditText password = findViewById(R.id.password);
@@ -122,7 +122,6 @@ public class StartActivity extends AppCompatActivity {
                         editor.commit();
                         if (!jObj.isNull("role") && jObj.getString("role").equalsIgnoreCase("isClient")) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices_admin");
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices");
                             FirebaseMessaging.getInstance().subscribeToTopic("allDevices_" + user_id);
                             Intent io = new Intent(StartActivity.this, NaviActivity.class);
                             io.putExtra("shopId", user_id);
@@ -131,7 +130,6 @@ public class StartActivity extends AppCompatActivity {
                             startActivity(io);
                             finish();
                         } else {
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic("allDevices");
                             FirebaseMessaging.getInstance().subscribeToTopic("allDevices_admin");
                             Intent io = new Intent(StartActivity.this, NaviActivity.class);
                             io.putExtra("role", role);

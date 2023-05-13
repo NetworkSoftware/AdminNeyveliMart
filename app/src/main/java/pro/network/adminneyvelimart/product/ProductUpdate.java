@@ -636,9 +636,9 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 if (!jsonObject.getBoolean("error")) {
+                    imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                     samplesList.add(imageUrl);
                     maddImageAdapter.notifyData(samplesList);
-                    imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {
                     imageUrl = null;
                 }
