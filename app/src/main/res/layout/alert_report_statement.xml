@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sans_bold"
+        android:gravity="center"
+        android:text="Select Date"
+        android:layout_margin="10dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="22dp" />
+
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="Select Location"
+        android:textColor="@color/black"
+        android:textColorHint="#c6c6c6"
+        android:textSize="15dp"
+        app:met_floatingLabel="normal" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fromDateTxt"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="From Date"
+            app:errorEnabled="true">
+
+            <pro.network.chennaifreshadmin.app.CustomFontEditText
+                android:id="@+id/fromDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:category="@string/date"
+                android:editable="false"
+                android:backgroundTint="@color/gray"
+                android:fontFamily="@font/sans"
+                android:textColorHint="#c6c6c6"
+                android:textSize="15dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/toDateTxt"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="To Date"
+            app:errorEnabled="true">
+
+            <pro.network.chennaifreshadmin.app.CustomFontEditText
+                android:id="@+id/toDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:category="@string/date"
+                android:editable="false"
+                android:backgroundTint="@color/gray"
+                android:fontFamily="@font/sans"
+                android:textColorHint="#c6c6c6"
+                android:textSize="15dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="#689F38"
+        android:fontFamily="@font/sans_bold"
+        android:gravity="center"
+        android:text="Submit"
+        android:textColor="@color/white"
+        android:textSize="15dp" />
+
+
+</LinearLayout>
