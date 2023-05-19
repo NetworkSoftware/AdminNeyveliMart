@@ -13,5 +13,4 @@ public interface StatusListener {
     void InProgress(Order order );
     void bill(Order position);
     void wallet(Order position);
-
 }

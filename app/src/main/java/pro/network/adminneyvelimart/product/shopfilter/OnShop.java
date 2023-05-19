@@ -1,4 +1,4 @@
-package pro.network.neyvelimart.shopfilter;
+package pro.network.adminneyvelimart.product.shopfilter;
 
 public interface OnShop {
     void onShop(String status);

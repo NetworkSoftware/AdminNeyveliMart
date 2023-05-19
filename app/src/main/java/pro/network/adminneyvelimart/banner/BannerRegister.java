@@ -42,8 +42,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AndroidMultiPartEntity;
@@ -64,9 +69,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
 
     String[] STOCKNAME = new String[]{"Loading"};
     String[] SUBCATENAME = new String[]{"Loading"};
-    private final String[] BANNERTAGTYPE = new String[]{
-            "Stock", "SubCategory",
-    };
+    private final String[] BANNERTAGTYPE = new String[]{"Stock", "SubCategory",};
 
     private Map<String, String> nameIdMap = new HashMap<>();
     private ProgressDialog pDialog;
@@ -102,8 +105,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
 
         tag_type = findViewById(R.id.tag_type);
 
-        ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, BANNERTAGTYPE);
+        ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, BANNERTAGTYPE);
         tag_type.setAdapter(stockAdapter);
         tag_type.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -129,9 +131,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             description.setText(banner.description);
             studentId = banner.id;
             imageUrl = banner.banner;
-            GlideApp.with(BannerRegister.this).load(banner.banner)
-                    .placeholder(R.drawable.ic_add_a_photo_black_24dp)
-                    .into(profiletImage);
+            GlideApp.with(BannerRegister.this).load(banner.banner).placeholder(R.drawable.ic_add_a_photo_black_24dp).into(profiletImage);
 
         } catch (Exception e) {
             Log.e("xxxxxxxxxxx", e.toString());
@@ -157,8 +157,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
         String tag_string_req = "req_register";
         pDialog.setMessage("Uploading ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                BANNERS, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.POST, BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -182,8 +181,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Registration Error: ", error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -208,8 +206,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
         String tag_string_req = "req_register";
         pDialog.setMessage("Uploading ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.PUT,
-                BANNERS, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.PUT, BANNERS, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response);
@@ -233,8 +230,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Registration Error: ", error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }) {
@@ -255,8 +251,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
         String tag_string_req = "req_register";
         //  pDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.GET,
-                STOCK + "?user=true", new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET, STOCK + "?user=true", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 hideDialog();
@@ -271,15 +266,13 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
                         nameIdMap = new HashMap<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            nameIdMap.put(jsonObject.getString("model"),
-                                    jsonObject.getString("id"));
+                            nameIdMap.put(jsonObject.getString("model"), jsonObject.getString("id"));
                             STOCKNAME[i] = jsonObject.getString("model");
                         }
 
                         if (stock_name.getText() != null) {
                             if (tag_type.getText() != null) {
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this,
-                                        android.R.layout.select_dialog_item, STOCKNAME);
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this, android.R.layout.select_dialog_item, STOCKNAME);
                                 stock_name.setThreshold(2);
                                 stock_name.setAdapter(adapter);
                             }
@@ -301,8 +294,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Registration Error: ", error.getMessage());
-                Toast.makeText(getApplication(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
@@ -318,8 +310,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
         String tag_string_req = "req_register";
         //  pDialog.setMessage("Processing ...");
         showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.GET,
-                STOCK + "?user=true", new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Request.Method.GET, STOCK + "?user=true", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 hideDialog();
@@ -330,19 +321,22 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
 
                     if (success == 1) {
                         JSONArray jsonArray = jObj.getJSONArray("data");
-                        SUBCATENAME = new String[jsonArray.length()];
+                        Set<String> subcategories = new HashSet<>();
                         nameIdMap = new HashMap<>();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            nameIdMap.put(jsonObject.getString("model"),
-                                    jsonObject.getString("id"));
-                            SUBCATENAME[i] = jsonObject.getString("sub_category");
+                            nameIdMap.put(jsonObject.getString("model"), jsonObject.getString("id"));
+                            subcategories.add(jsonObject.getString("sub_category"));
+                        }
+                        SUBCATENAME = new String[subcategories.size()];
+                        List<String> sublist = new ArrayList<>(subcategories);
+                        for (int i = 0; i < sublist.size(); i++) {
+                            SUBCATENAME[i] = sublist.get(i);
                         }
 
                         if (stock_name.getText() != null) {
                             if (tag_type.getText() != null) {
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this,
-                                        android.R.layout.select_dialog_item, SUBCATENAME);
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(BannerRegister.this, android.R.layout.select_dialog_item, SUBCATENAME);
                                 stock_name.setThreshold(2);
                                 stock_name.setAdapter(adapter);
                             }
@@ -365,8 +359,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Registration Error: ", error.getMessage());
-                Toast.makeText(getApplication(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
@@ -379,13 +372,11 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
     }
 
     private void showDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+        if (!pDialog.isShowing()) pDialog.show();
     }
 
     private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+        if (pDialog.isShowing()) pDialog.dismiss();
     }
 
 
@@ -440,14 +431,13 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(Appconfig.URL_IMAGE_UPLOAD);
             try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
+                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(new AndroidMultiPartEntity.ProgressListener() {
 
-                            @Override
-                            public void transferred(long num) {
-                                publishProgress((int) ((num / (float) totalSize) * 100));
-                            }
-                        });
+                    @Override
+                    public void transferred(long num) {
+                        publishProgress((int) ((num / (float) totalSize) * 100));
+                    }
+                });
 
                 File sourceFile = new File(filepath);
                 // Adding file data to http body
@@ -466,8 +456,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
                     responseString = EntityUtils.toString(r_entity);
 
                 } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
+                    responseString = "Error occurred! Http Status Code: " + statusCode;
 
                 }
 
@@ -487,13 +476,7 @@ public class BannerRegister extends AppCompatActivity implements Imageutils.Imag
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 if (!jsonObject.getBoolean("error")) {
-                    GlideApp.with(getApplicationContext())
-                            .load(filepath)
-                            .dontAnimate()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .skipMemoryCache(false)
-                            .placeholder(R.drawable.neyvelimart)
-                            .into(profiletImage);
+                    GlideApp.with(getApplicationContext()).load(filepath).dontAnimate().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false).placeholder(R.drawable.neyvelimart).into(profiletImage);
                     imageUrl = Appconfig.ip + "/images/" + imageutils.getfilename_from_path(filepath);
                 } else {
                     imageUrl = null;

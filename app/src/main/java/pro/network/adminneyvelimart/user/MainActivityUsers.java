@@ -85,12 +85,16 @@ public class MainActivityUsers extends AppCompatActivity implements OnUsers {
                         JSONArray jsonArray = jObj.getJSONArray("data");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            Users blogReview = new Users(
-                                    jsonObject.getString("name"),
-                                    jsonObject.getString("phone"),
-                                    jsonObject.getString("id"),
-                                    jsonObject.getString("walletAmt")
-                            );
+                            Users blogReview = new Users();
+                            blogReview.setId(jsonObject.getString("id"));
+                            blogReview.setName(jsonObject.getString("name"));
+                            blogReview.setPhone(jsonObject.getString("phone"));
+                            blogReview.setWallerAmt(jsonObject.getString("walletAmt"));
+                            if (jsonObject.has("email")) {
+                                blogReview.setEmail(jsonObject.getString("email"));
+                            } else {
+                                blogReview.setEmail("NA");
+                            }
                             bannerList.add(blogReview);
                         }
                     }

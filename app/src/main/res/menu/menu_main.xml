@@ -8,5 +8,13 @@
         android:orderInCategory="100"
         android:title="Search"
         app:showAsAction="always"
+        android:visible="true"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item
+        android:id="@+id/action_sheet"
+        android:icon="@drawable/xls"
+        android:orderInCategory="100"
+        android:title="Excel"
+        app:iconTint="@color/white"
+        app:showAsAction="always"/>
 </menu>

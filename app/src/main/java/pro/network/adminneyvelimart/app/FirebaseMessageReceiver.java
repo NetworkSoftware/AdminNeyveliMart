@@ -114,6 +114,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mediaPlayer.stop();
         mediaPlayer.start();
         notificationManager.notify(0, builder.build());
     }

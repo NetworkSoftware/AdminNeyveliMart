@@ -54,8 +54,8 @@ public class StartActivity extends AppCompatActivity {
 
         final EditText phone = findViewById(R.id.phone);
         final EditText password = findViewById(R.id.password);
-        phone.setText("7200072057");
-        password.setText("1234567890");
+//        phone.setText("7200072057");
+//        password.setText("1234567890");
         if ((!("Admin".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))
                 && (!("isClient".equalsIgnoreCase(sharedpreferences.getString(Appconfig.shopPhone, ""))))) {
             phone.setText(sharedpreferences.getString(Appconfig.shopPhone, ""));

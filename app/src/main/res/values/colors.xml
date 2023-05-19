@@ -10,7 +10,7 @@
     <color name="soft_grey">#ffeceeef</color>
     <color name="viewBg">#f1f5f8</color>
     <color name="view_line">#d4d9d5</color>
-
+    <color name="reg">#ff4f5e</color>
     <color name="contact_name">#333333</color>
     <color name="contact_number">#8c8c8c</color>
 
@@ -23,5 +23,8 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="fullPrimary">#322d89</color>
     <color name="light_gray">#EAEAEA</color>
+
+    <color name="chipSelected">#330000A0</color>
+    <color name="chipUnSelect">#FBF7F7</color>
 
 </resources>

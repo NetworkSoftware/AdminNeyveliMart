@@ -450,7 +450,6 @@
                     android:textColor="@color/colorPrimary"
                     app:strokeColor="@color/colorPrimary" />
 
-
             </LinearLayout>
 
         </HorizontalScrollView>

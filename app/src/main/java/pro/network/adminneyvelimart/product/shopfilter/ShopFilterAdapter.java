@@ -1,4 +1,4 @@
-package pro.network.neyvelimart.shopfilter;
+package pro.network.adminneyvelimart.product.shopfilter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import pro.network.neyvelimart.R;
-import pro.network.neyvelimart.chip.ShopBean;
+import pro.network.adminneyvelimart.R;
 
 
 public class ShopFilterAdapter extends RecyclerView.Adapter<ShopFilterAdapter.MyViewHolder> {

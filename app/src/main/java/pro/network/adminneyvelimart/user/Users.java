@@ -5,12 +5,26 @@ public class Users {
     String phone;
     String id;
     String wallerAmt;
+    String email;
 
-    public Users(String name, String phone,String id,String wallerAmt) {
+    public Users(String name, String phone, String id, String wallerAmt, String email) {
         this.name = name;
         this.phone = phone;
-        this.id=id;
-        this.wallerAmt=wallerAmt;
+        this.id = id;
+        this.wallerAmt = wallerAmt;
+        this.email = email;
+    }
+
+    public Users() {
+
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {

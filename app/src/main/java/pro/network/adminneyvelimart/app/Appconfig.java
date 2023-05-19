@@ -30,7 +30,6 @@ import java.util.TimeZone;
 
 public class Appconfig {
     //Key values
-    public static final String shopIdKey = "shopIdKey";
     public static final String mypreference = "mypref";
     public static final String isLogin = "isLoginKey";
     public static final String shopId = "SHOPID";
@@ -74,6 +73,8 @@ public class Appconfig {
     public static String BANNER_CREATE = ip + "/fileFeed";
     public static String BANNER_GET_ALL = ip + "/get_all_feed";
     public static String BANNER_DELETE = ip + "/fileDelete";
+
+    public static final String UPLOAD_STOCK = ip + "/excelUpload";
     public static Map<String, String[]> stringMap = new HashMap<String, String[]>() {{
         put("Fashion", new String[]{});
         put("COSMETICS", new String[]{"Eye Liner", "Lipstic", "All Makeup Kits"});
@@ -231,10 +232,10 @@ public class Appconfig {
 
     }
 
-    public static String returnStoragePermission(){
-        if(Build.VERSION.SDK_INT >= 33){
-             return  "android.permission.READ_MEDIA_IMAGES";
-        }else{
+    public static String returnStoragePermission() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            return "android.permission.READ_MEDIA_IMAGES";
+        } else {
             return Manifest.permission.READ_EXTERNAL_STORAGE;
         }
     }

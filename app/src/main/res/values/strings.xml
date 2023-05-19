@@ -18,4 +18,8 @@
     <string name="order">Orders</string>
     <string name="categories">Categories</string>
 
+    <string name="selectable">selectable</string>
+    <string name="dateandtime">dateandtime</string>
+    <string name="date">date</string>
+
 </resources>

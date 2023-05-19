@@ -1,5 +1,6 @@
 package pro.network.adminneyvelimart.order;
 
+import static org.apache.poi.ss.util.CellUtil.createCell;
 import static pro.network.adminneyvelimart.app.Appconfig.DELIVERYBOY;
 import static pro.network.adminneyvelimart.app.Appconfig.ORDER;
 import static pro.network.adminneyvelimart.app.Appconfig.ORDER_ASSIGN_DBOY;
@@ -7,12 +8,12 @@ import static pro.network.adminneyvelimart.app.Appconfig.WALLET;
 import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,18 +65,23 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import pro.network.adminneyvelimart.R;
 import pro.network.adminneyvelimart.app.AppController;
 import pro.network.adminneyvelimart.app.Appconfig;
+import pro.network.adminneyvelimart.app.CustomFontEditText;
 import pro.network.adminneyvelimart.app.PdfConfig;
 import pro.network.adminneyvelimart.product.Product;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.WorkbookUtil;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class MainActivityOrder extends AppCompatActivity
         implements OrderAdapter.ContactsAdapterListener, StatusListener {
@@ -95,6 +101,7 @@ public class MainActivityOrder extends AppCompatActivity
     private String statusVal;
     SharedPreferences sharedPreferences;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,8 +119,6 @@ public class MainActivityOrder extends AppCompatActivity
         orderList = new ArrayList<>();
         mAdapter = new OrderAdapter(this, orderList,
                 this, this, sharedPreferences);
-
-
         recycler_view_delivered = findViewById(R.id.recycler_view_delivered);
         deliveredList = new ArrayList<>();
         deliverAdapter = new OrderAdapter(this, deliveredList,
@@ -136,12 +141,44 @@ public class MainActivityOrder extends AppCompatActivity
         loadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchContacts();
+                fetchContacts("", "", false);
             }
         });
+
     }
 
-    private void fetchContacts() {
+    private void alertMonthReport() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivityOrder.this);
+        LayoutInflater inflater = MainActivityOrder.this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.alert_report_statement, null);
+        final CustomFontEditText fromDate = dialogView.findViewById(R.id.fromDate);
+        final CustomFontEditText toDate = dialogView.findViewById(R.id.toDate);
+        final TextView submit = dialogView.findViewById(R.id.submit);
+        dialogBuilder.setView(dialogView);
+        final AlertDialog b = dialogBuilder.create();
+        b.setCancelable(true);
+        b.show();
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fromDate.getText().toString().length() > 0
+                        && toDate.getText().toString().length() > 0) {
+                    fetchContacts(fromDate.getText().toString(), toDate.getText().toString(), true);
+                    b.dismiss();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Select Location", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+
+    }
+
+
+    private void fetchContacts(String fromDate, String toDate, boolean sheet) {
         String tag_string_req = "req_register";
         progressDialog.setMessage("Processing ...");
         showDialog();
@@ -156,9 +193,15 @@ public class MainActivityOrder extends AppCompatActivity
         } else {
             shopId = shopID;
         }
+        String url;
+        if (sheet) {
+            url = ORDER + "?fromDate=" + fromDate.replace("-", "/") + "&toDate=" + toDate.replace("-", "/") + "&report=report";
+        } else {
+            url = ORDER + "?offset=" + offset * 10 + "" + "&status=" + statusVal
+                    + "&shopid=" + shopId;
+        }
         StringRequest strReq = new StringRequest(Request.Method.GET,
-                ORDER + "?offset=" + offset * 10 + "" + "&status=" + statusVal
-                        + "&shopid=" + shopId, new Response.Listener<String>() {
+                url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -226,6 +269,9 @@ public class MainActivityOrder extends AppCompatActivity
                         }
                         mAdapter.notifyData(orderList);
                         deliverAdapter.notifyData(deliveredList);
+                        if (sheet) {
+                            printXLSheet(orderList);
+                        }
                         int valTotal = orderList.size() + deliveredList.size();
                         getSupportActionBar().setSubtitle("Orders - " + valTotal);
 
@@ -262,16 +308,148 @@ public class MainActivityOrder extends AppCompatActivity
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
+    String getFilename(ArrayList<Product> accountList) {
+        String pro = "";
+        for (int j = 0; j < accountList.size(); j++) {
+            pro = accountList.get(j).getModel() + " - " + accountList.get(j).getBrand() + ",\n";
+        }
+        return pro;
+
+    }
+
+    public void printXLSheet(List<Order> user) {
+
+        try {
+            String path = getApplication().getExternalCacheDir().getPath() + "/PDF";
+            File dir = new File(path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File uriFile = new File(dir, System.currentTimeMillis() + ".xlsx");
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet(WorkbookUtil.createSafeSheetName("report"));
+
+            int columns = 8;
+            for (int i = 0; i < columns; i++) {
+                sheet.setColumnWidth(i, 15 * 256);
+            }
+
+            Row row = sheet.createRow(0);
+            createCell(row, 0, "S.NO");
+            createCell(row, 1, "Shop");
+            createCell(row, 2, "Product");
+            createCell(row, 3, "Price");
+            createCell(row, 4, "Count");
+            createCell(row, 5, "User Name");
+            createCell(row, 6, "Phone");
+            createCell(row, 7, "Date");
+
+            for (int i = 0; i < user.size(); i++) {
+                Row row1 = sheet.createRow(i + 1);
+                Order userbean = user.get(i);
+                createCell(row1, 0, String.valueOf(i + 1));
+                createCell(row1, 1, userbean.getShopname());
+                createCell(row1, 2, getFilename(userbean.getProductBeans()));
+                createCell(row1, 3, userbean.getPrice());
+                createCell(row1, 4, userbean.getQuantity());
+                createCell(row1, 5, userbean.getName());
+                createCell(row1, 6, userbean.getPhone());
+                createCell(row1, 7, userbean.getCreatedOn());
+            }
+            Uri fileUri = Uri.fromFile(uriFile);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                fileUri = FileProvider.getUriForFile(getApplicationContext(),
+                        getApplication().getPackageName() + ".provider",
+                        uriFile);
+            }
+
+            OutputStream outputStream = getContentResolver().openOutputStream(fileUri);
+            workbook.write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+            Log.i("TAG", "writeExcel: export successful");
+            Toast.makeText(getApplicationContext(), "export successful", Toast.LENGTH_SHORT).show();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(fileUri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
+            } else {
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(fileUri, "application/xlsx");
+                Intent intent = Intent.createChooser(target, "Open File");
+                startActivity(intent);
+            }
+
+            hideDialog();
+        } catch (Exception e) {
+            Toast.makeText(getApplication(), e.toString(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            hideDialog();
+        }
+
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.action_sheet);
+        item.setVisible(!sharedPreferences.getString(Appconfig.role, "").equalsIgnoreCase("isClient"));
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setVisibility(View.GONE);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                offset = 0;
+                fetchContacts("", "", false);
+                return false;
+            }
+        });
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                if (query.length() > 3) {
+                    offset = 0;
+                    fetchContacts("", "", false);
+                } else if (query.length() == 0) {
+                    offset = 0;
+                    fetchContacts("", "", false);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                if (query.length() > 3) {
+                    offset = 0;
+                    fetchContacts("", "", false);
+                } else if (query.length() == 0) {
+                    offset = 0;
+                    fetchContacts("", "", false);
+                }
+                return false;
+            }
+        });
+        if (getIntent() != null && getIntent().getBooleanExtra("isSearch", false)) {
+            searchView.setIconified(false);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
@@ -280,7 +458,9 @@ public class MainActivityOrder extends AppCompatActivity
         if (id == R.id.action_search) {
             return true;
         }
-
+        if (id == R.id.action_sheet) {
+            alertMonthReport();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -391,7 +571,7 @@ public class MainActivityOrder extends AppCompatActivity
                     }
                 } catch (JSONException e) {
                 }
-                fetchContacts();
+                fetchContacts("", "", false);
             }
         }, new Response.ErrorListener() {
 
@@ -425,7 +605,7 @@ public class MainActivityOrder extends AppCompatActivity
                     Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     if (success == 1) {
                         offset = 0;
-                        fetchContacts();
+                        fetchContacts("", "", false);
                         if (mBottomSheetDialog != null) {
                             mBottomSheetDialog.cancel();
                         }
@@ -489,7 +669,6 @@ public class MainActivityOrder extends AppCompatActivity
 
     @Override
     public void onCancelClick(final String id) {
-
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivityOrder.this);
         LayoutInflater inflater = MainActivityOrder.this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.alert_dialog, null);
@@ -554,6 +733,11 @@ public class MainActivityOrder extends AppCompatActivity
     public void wallet(Order order) {
         showCashBack(order);
     }
+
+//    @Override
+//    public void sheet(Order position) {
+//        printXLSheet(MainActivityOrder.this, position);
+//    }
 
     private void showCashBack(final Order order) {
         final RoundedBottomSheetDialog mBottomSheetDialog = new RoundedBottomSheetDialog(MainActivityOrder.this);
@@ -648,7 +832,7 @@ public class MainActivityOrder extends AppCompatActivity
                             mBottomSheetDialog.cancel();
                         }
                         offset = 0;
-                        fetchContacts();
+                        fetchContacts("", "", false);
                     }
                 } catch (JSONException e) {
                     Log.e("xxxxxxxxxxx", e.toString());
@@ -693,7 +877,7 @@ public class MainActivityOrder extends AppCompatActivity
                     int success = jObj.getInt("success");
                     if (success == 1) {
                         offset = 0;
-                        fetchContacts();
+                        fetchContacts("", "", false);
                     } else {
                         Toast.makeText(getApplication(), jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
