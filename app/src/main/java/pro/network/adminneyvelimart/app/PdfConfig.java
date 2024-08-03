@@ -149,7 +149,7 @@ public class PdfConfig {
         table5.setWidths(new float[]{1});
         table5.addCell(createTextcenter("\n", catNormalFont, true));
         table5.addCell(createTextcenter("E & OE", subFont, false));
-        table5.addCell(createTextcenter("FOR EXCHANGE POLICY PLEASE VISIT M MART", subFont, true));
+        table5.addCell(createTextcenter("FOR EXCHANGE POLICY PLEASE VISIT NEYVELI MART", subFont, true));
         table5.addCell(createTextcenter("Tax Invoice/Bill of Supply -Sale", subFont, false));
         table5.addCell(createTextcenter("Bill No: " + Appconfig.intToString(Integer.parseInt(mainbean.getId()), 5) + " Date : " + date, subFont, true));
         table5.addCell(createTextcenter("Its is a computer generated invoice generated original / customer copy", subFont, false));
