@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Categories implements Serializable {
-    String id;
+    String id,position;
     String title;
     String image;
     String availCourier;
@@ -15,10 +15,19 @@ public class Categories implements Serializable {
     public Categories() {
     }
 
-    public Categories(String title, String image, String availCourier) {
+    public Categories(String title, String image, String availCourier,String position) {
         this.title = title;
         this.image = image;
         this.availCourier = availCourier;
+        this.position = position;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public String getAvailCourier() {

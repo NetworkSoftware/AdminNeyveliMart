@@ -109,6 +109,11 @@ public class MainActivityCategories extends AppCompatActivity implements Categor
                                 categories.setAvailCourier("true");
 
                             }
+                            if (jsonObject.has("position")) {
+                                categories.setPosition(jsonObject.getString("position"));
+                            } else {
+                                categories.setPosition(jsonObject.getString("id"));
+                            }
                             categoriesList.add(categories);
                         }
                         mAdapter.notifyData(categoriesList);

@@ -58,8 +58,8 @@ public class PdfConfig {
         table1.setWidthPercentage(100);
         table1.setWidths(new int[]{1});
 
-        table1.addCell(createTextbottomlow("NEYVELIMART", nameFont, false));
-        table1.addCell(createTextbottomlow("Ph:9181222 74273", catFont, false));
+        table1.addCell(createTextbottomlow("N MART", nameFont, false));
+        table1.addCell(createTextbottomlow("Ph:919894831091", catFont, false));
         table1.addCell(createTextCellCenter(mainbean.getShopname(), catNormalFont, true));
 
         table1.setSplitLate(false);
@@ -95,7 +95,7 @@ public class PdfConfig {
             table3.addCell(createTextLeft(productListBean.getBrand() + "_" + productListBean.getModel()
                     + "\n" + "Shop-" + productListBean.shopname, catNormalFont, false));
             table3.addCell(createTextRight(productListBean.getQty(), catNormalFont));
-            table3.addCell(createTextRight("Rs." + productListBean.getMrp() + ".00", catNormalFont));
+            table3.addCell(createTextRight("Rs." + productListBean.getNmPrice() + ".00", catNormalFont));
         }
 
 
@@ -149,7 +149,7 @@ public class PdfConfig {
         table5.setWidths(new float[]{1});
         table5.addCell(createTextcenter("\n", catNormalFont, true));
         table5.addCell(createTextcenter("E & OE", subFont, false));
-        table5.addCell(createTextcenter("FOR EXCHANGE POLICY PLEASE VISIT NEYVELI MART", subFont, true));
+        table5.addCell(createTextcenter("FOR EXCHANGE POLICY PLEASE VISIT M MART", subFont, true));
         table5.addCell(createTextcenter("Tax Invoice/Bill of Supply -Sale", subFont, false));
         table5.addCell(createTextcenter("Bill No: " + Appconfig.intToString(Integer.parseInt(mainbean.getId()), 5) + " Date : " + date, subFont, true));
         table5.addCell(createTextcenter("Its is a computer generated invoice generated original / customer copy", subFont, false));

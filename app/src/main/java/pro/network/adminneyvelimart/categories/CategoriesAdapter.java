@@ -54,7 +54,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Categories categories = categoriesList.get(position);
 
-        holder.title.setText(categories.title);
+        holder.title.setText(categories.title + " - " + categories.getPosition());
         GlideApp.with(context)
                 .load(Appconfig.getResizedImage(categories.getImage(), true))
                 .placeholder(R.drawable.vivo)

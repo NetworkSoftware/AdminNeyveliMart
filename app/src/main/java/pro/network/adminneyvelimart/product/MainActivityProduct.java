@@ -545,7 +545,7 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                         .withActivity(MainActivityProduct.this)
                         .withCloseMenu(true)
                         .withHiddenFiles(false)
-                        .withFilter(Pattern.compile(".*\\.(xlsx)$"))
+                       // .withFilter(Pattern.compile(".*\\.(xlsx)$"))
                         .withFilterDirectories(false)
                         .withTitle("Select file")
                         .withRequestCode(PICKFILE_REQUEST_CODE)

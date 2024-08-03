@@ -52,14 +52,14 @@ import pro.network.adminneyvelimart.app.Imageutils;
 
 public class CategoriesRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener {
 
-    EditText description;
+    EditText description, position;
     String categoryId = null;
     TextView submit;
     Imageutils imageutils;
     private ProgressDialog pDialog;
     private ImageView profiletImage;
     private String imageUrl = "";
-    private Categories categories= null;
+    private Categories categories = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,17 +82,24 @@ public class CategoriesRegister extends AppCompatActivity implements Imageutils.
         pDialog.setCancelable(false);
 
         description = findViewById(R.id.description);
+        position = findViewById(R.id.position);
         submit = findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
+                if (position.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter valid position", Toast.LENGTH_SHORT).show();
+                } else {
+                    registerUser();
+                }
+
             }
         });
         try {
             categories = (Categories) getIntent().getSerializableExtra("data");
             description.setText(categories.title);
+            position.setText(categories.position);
             categoryId = categories.id;
             imageUrl = categories.image;
             GlideApp.with(CategoriesRegister.this).load(categories.image)
@@ -145,9 +152,10 @@ public class CategoriesRegister extends AppCompatActivity implements Imageutils.
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
                 if (categories != null) {
-                    localHashMap.put("id",categoryId);
+                    localHashMap.put("id", categoryId);
                 }
                 localHashMap.put("image", imageUrl);
+                localHashMap.put("position", position.getText().toString());
                 localHashMap.put("title", description.getText().toString());
                 return localHashMap;
             }

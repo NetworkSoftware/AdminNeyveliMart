@@ -8,10 +8,10 @@ android {
         applicationId "pro.network.adminneyvelimart"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 15
+        versionCode 17
         useLibrary 'org.apache.http.legacy'
         multiDexEnabled true
-        versionName "1.1.5"
+        versionName "1.1.7"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
