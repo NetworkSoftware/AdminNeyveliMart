@@ -68,7 +68,7 @@ public class Appconfig {
     //
     public static final String COUPON = ip + "/coupon";
     public static final String WALLET = ip + "/wallet";
-    public static final String USER = ip + "/user";
+    public static final String USER = ip + "/userAll";
 
     public static final String IMAGE_URL = ip + "/images/";
     public static String URL_IMAGE_UPLOAD = ip + "/fileUpload";

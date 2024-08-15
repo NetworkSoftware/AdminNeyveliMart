@@ -64,7 +64,7 @@ public class MainActivityUsers extends AppCompatActivity implements OnUsers {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-
+getAllUser();;
     }
 
     private void getAllUser() {
