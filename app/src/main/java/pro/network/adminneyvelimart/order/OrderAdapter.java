@@ -75,6 +75,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         holder.name.setText(order.getName());
         holder.dtime.setText(order.getDtime());
         holder.address.setText(order.getAddress());
+        holder.addressUser.setText(order.getLiveLocation());
+
         holder.reason.setText(order.getReson());
         //holder.orderedOn.setText(Appconfig.convertTimeToLocal(order.createdOn));
         holder.dCharge.setText(order.dcharge);
@@ -232,7 +234,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, price, status, quantity, dCharge,
-                phone, desTxt, nameTxt, phoneTxt, orderedOn, address, dtime, reason, cashback, order_id;
+                phone, desTxt, nameTxt, phoneTxt, orderedOn,addressUser, address, dtime, reason, cashback, order_id;
         public ImageView thumbnail;
         public RecyclerView cart_sub_list;
         LinearLayout nameLi, phoneLi;
@@ -271,6 +273,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
             dtime = view.findViewById(R.id.dtime);
             wallet = view.findViewById(R.id.wallet);
             cashback = view.findViewById(R.id.cashback);
+            addressUser =view.findViewById(R.id.addressUser);
 
         }
     }

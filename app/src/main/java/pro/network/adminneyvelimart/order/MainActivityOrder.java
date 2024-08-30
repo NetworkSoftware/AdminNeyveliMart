@@ -228,6 +228,7 @@ public class MainActivityOrder extends AppCompatActivity
                                 order.setName(jsonObject.getString("name"));
                                 order.setPhone(jsonObject.getString("phone"));
                                 order.setAddress(jsonObject.getString("address"));
+                                order.setLiveLocation(jsonObject.getString("liveLocation"));
                                 order.setCashback(jsonObject.getString("cashback"));
                                 order.setCouponAmt(jsonObject.getString("couponCost"));
                                 order.setWalletAmt(jsonObject.getString("wallet"));

@@ -27,7 +27,7 @@ public class Order implements Serializable {
     String dtime;
     String shopname;
     String paymentId;
-    String user,walletAmt,couponAmt,cashback;
+    String user,walletAmt,couponAmt,cashback,liveLocation;
 
     public Order() {
     }
@@ -211,5 +211,13 @@ public class Order implements Serializable {
 
     public void setCashback(String cashback) {
         this.cashback = cashback;
+    }
+
+    public String getLiveLocation() {
+        return liveLocation;
+    }
+
+    public void setLiveLocation(String liveLocation) {
+        this.liveLocation = liveLocation;
     }
 }

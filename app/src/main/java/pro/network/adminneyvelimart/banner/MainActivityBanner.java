@@ -70,14 +70,14 @@ public class MainActivityBanner extends AppCompatActivity implements BannerClick
         recyclerView.setAdapter(mAdapter);
 
 
-        FloatingActionButton addStock = findViewById(R.id.addbanner);
-        addStock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivityBanner.this, BannerRegister.class);
-                startActivity(intent);
-            }
-        });
+//        FloatingActionButton addStock = findViewById(R.id.addbanner);
+//        addStock.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivityBanner.this, BannerRegister.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 
     /**

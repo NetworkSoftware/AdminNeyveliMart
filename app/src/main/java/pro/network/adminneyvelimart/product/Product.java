@@ -22,7 +22,7 @@ public class Product implements Serializable {
     String createdon;
     public String shopname;
     public String shopid;
-    public String latlong, nmPrice, price,availCourier;
+    public String latlong, nmPrice, price,availCourier,timing;
 
 
     public Product() {
@@ -193,5 +193,13 @@ public class Product implements Serializable {
 
     public void setAvailCourier(String availCourier) {
         this.availCourier = availCourier;
+    }
+
+    public String getTiming() {
+        return timing;
+    }
+
+    public void setTiming(String timing) {
+        this.timing = timing;
     }
 }

@@ -7,6 +7,7 @@ import static pro.network.adminneyvelimart.app.Appconfig.SINGLESHOPNAME;
 import static pro.network.adminneyvelimart.app.Appconfig.STOCK;
 import static pro.network.adminneyvelimart.app.Appconfig.mypreference;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -79,7 +80,9 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     private final String[] STOCKUPDATE = new String[]{
             "In Stock", "Currently Unavailable",
     };
-
+    private final String[] STOCKTIMING = new String[]{
+            "Breakfast", "Lunch ","Dinner",
+    };
     AutoCompleteTextView brand;
     EditText model;
     EditText price, nmPrice;
@@ -87,7 +90,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     AddImageAdapter maddImageAdapter;
     MaterialBetterSpinner category;
     MaterialBetterSpinner shopname;
-    MaterialBetterSpinner stock_update;
+    MaterialBetterSpinner stock_update,timing;
     String productId = null;
     TextView submit;
     Imageutils imageutils;
@@ -102,6 +105,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     private Product contact = null;
     private SharedPreferences sharedPreferences;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +169,18 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             }
         });
+
+     //   timing = findViewById(R.id.timing);
+
+//        ArrayAdapter<String> timingAdapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_dropdown_item_1line, STOCKTIMING);
+//        timing.setAdapter(timingAdapter);
+//        timing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            }
+//        });
+
         brand = findViewById(R.id.brand);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, CATEGORY);
@@ -206,9 +222,14 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                 } else if (nmPrice.getText().toString().length() <= 0 ||
                         nmPrice.getText().toString().equalsIgnoreCase("0")) {
                     nmPrice.setError("Enter the NMP");
-                } else if (stock_update.getText().toString().length() <= 0) {
+                }
+//                else if (timing.getText().toString().length() <= 0) {
+//                    timing.setError("Select the Timing");
+//                }
+                else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
                 }
+
 //                else if (samplesList.size() <= 0) {
 //                    Toast.makeText(getApplicationContext(), "Upload the Images!", Toast.LENGTH_SHORT).show();
 //                }
@@ -231,6 +252,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             productId = contact.id;
             stock_update.setText(contact.stock_update);
             shopname.setText(contact.shopname);
+          //  timing.setText(contact.timing);
             imageUrl = contact.image;
 
             if (imageUrl == null) {
@@ -303,6 +325,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                 localHashMap.put("mrp", price.getText().toString());
                 localHashMap.put("nmPrice", nmPrice.getText().toString());
                 localHashMap.put("stock_update", stock_update.getText().toString());
+              //  localHashMap.put("timing", timing.getText().toString());
                 if (contact != null) {
                     localHashMap.put("id", productId);
                 }
