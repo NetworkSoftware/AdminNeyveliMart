@@ -96,7 +96,7 @@ public class Appconfig {
     };
 
     public static String getResizedImage(String path, boolean isResized) {
-        if (isResized) {
+        if (isResized && !path.contains(IMAGE_URL)) {
             return IMAGE_URL + "small/" + path.substring(path.lastIndexOf("/") + 1);
         }
         return path;

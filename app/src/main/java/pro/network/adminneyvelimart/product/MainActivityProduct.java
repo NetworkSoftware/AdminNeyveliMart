@@ -240,7 +240,7 @@ public class MainActivityProduct extends AppCompatActivity implements ProductAda
                             product.setNmPrice(jsonObject.getString("nmPrice"));
                             product.setModel(jsonObject.getString("model"));
                             product.setImage(jsonObject.getString("image"));
-                            //product.setTiming(jsonObject.getString("timing"));
+                            product.setTiming(jsonObject.getString("timing"));
 
                             try {
                                 JSONObject shopObject = jsonObject.getJSONObject("shop");

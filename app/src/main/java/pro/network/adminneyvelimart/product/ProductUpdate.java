@@ -61,6 +61,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,9 +81,15 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     private final String[] STOCKUPDATE = new String[]{
             "In Stock", "Currently Unavailable",
     };
-    private final String[] STOCKTIMING = new String[]{
-            "Breakfast", "Lunch ","Dinner",
-    };
+
+    TextView timing;
+    boolean[] selectedLanguage;
+    ArrayList<Integer> langList = new ArrayList<>();
+    String[] langArray = {"Breakfast", "Lunch ","Dinner"};
+
+
+
+
     AutoCompleteTextView brand;
     EditText model;
     EditText price, nmPrice;
@@ -90,7 +97,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     AddImageAdapter maddImageAdapter;
     MaterialBetterSpinner category;
     MaterialBetterSpinner shopname;
-    MaterialBetterSpinner stock_update,timing;
+    MaterialBetterSpinner stock_update;
     String productId = null;
     TextView submit;
     Imageutils imageutils;
@@ -101,6 +108,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     private ProgressDialog pDialog;
     private RecyclerView imagelist;
     private ArrayList<String> samplesList = new ArrayList<>();
+
     private String imageUrl = "";
     private Product contact = null;
     private SharedPreferences sharedPreferences;
@@ -170,16 +178,94 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             }
         });
 
-     //   timing = findViewById(R.id.timing);
 
-//        ArrayAdapter<String> timingAdapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_dropdown_item_1line, STOCKTIMING);
-//        timing.setAdapter(timingAdapter);
-//        timing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            }
-//        });
+        timing = findViewById(R.id.textView);
+
+        // initialize selected language array
+        selectedLanguage = new boolean[langArray.length];
+
+        timing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Initialize alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProductUpdate.this);
+
+                // set title
+                builder.setTitle("Select Language");
+
+                // set dialog non cancelable
+                builder.setCancelable(false);
+
+                builder.setMultiChoiceItems(langArray, selectedLanguage, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        // check condition
+                        if (b) {
+                            // when checkbox selected
+                            // Add position  in lang list
+                            langList.add(i);
+                            // Sort array list
+                            Collections.sort(langList);
+                        } else {
+                            // when checkbox unselected
+                            // Remove position from langList
+                            langList.remove(Integer.valueOf(i));
+                        }
+                    }
+                });
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Initialize string builder
+                        StringBuilder stringBuilder = new StringBuilder();
+                        // use for loop
+                        for (int j = 0; j < langList.size(); j++) {
+                            // concat array value
+                            stringBuilder.append(langArray[langList.get(j)]);
+                            // check condition
+                            if (j != langList.size() - 1) {
+                                // When j value  not equal
+                                // to lang list size - 1
+                                // add comma
+                                stringBuilder.append(", ");
+                            }
+                        }
+                        // set text on textView
+                        timing.setText(stringBuilder.toString());
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // dismiss dialog
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // use for loop
+                        for (int j = 0; j < selectedLanguage.length; j++) {
+                            // remove all selection
+                            selectedLanguage[j] = false;
+                            // clear language list
+                            langList.clear();
+                            // clear text view value
+                            timing.setText("");
+                        }
+                    }
+                });
+                // show dialog
+                builder.show();
+            }
+        });
+
+
+
+
 
         brand = findViewById(R.id.brand);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
@@ -223,9 +309,9 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                         nmPrice.getText().toString().equalsIgnoreCase("0")) {
                     nmPrice.setError("Enter the NMP");
                 }
-//                else if (timing.getText().toString().length() <= 0) {
-//                    timing.setError("Select the Timing");
-//                }
+                else if (timing.getText().toString().length() <= 0) {
+                    timing.setError("Select the Timing");
+                }
                 else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
                 }
@@ -252,7 +338,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
             productId = contact.id;
             stock_update.setText(contact.stock_update);
             shopname.setText(contact.shopname);
-          //  timing.setText(contact.timing);
+            timing.setText(contact.timing);
             imageUrl = contact.image;
 
             if (imageUrl == null) {
@@ -325,7 +411,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                 localHashMap.put("mrp", price.getText().toString());
                 localHashMap.put("nmPrice", nmPrice.getText().toString());
                 localHashMap.put("stock_update", stock_update.getText().toString());
-              //  localHashMap.put("timing", timing.getText().toString());
+                localHashMap.put("timing", timing.getText().toString());
                 if (contact != null) {
                     localHashMap.put("id", productId);
                 }

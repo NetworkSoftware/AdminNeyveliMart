@@ -194,18 +194,22 @@
                             android:textSize="@dimen/textsize" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-<!--                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner-->
-<!--                        android:id="@+id/timing"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_margin="5dp"-->
-<!--                        android:layout_marginLeft="10dp"-->
-<!--                        android:layout_marginRight="10dp"-->
-<!--                        android:hint="Select Timing"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textColorHint="#c6c6c6"-->
-<!--                        android:textSize="15dp"-->
-<!--                        app:met_floatingLabel="normal" />-->
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:drawable/editbox_background"
+                        android:drawableRight="@android:drawable/arrow_down_float"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_margin="5dp"
+                        android:textColorHint="#c6c6c6"
+                        android:drawablePadding="16dp"
+                        android:hint="Select Timing"
+                        android:padding="18dp" />
 
                     <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                         android:id="@+id/stock_update"

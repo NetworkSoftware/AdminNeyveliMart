@@ -100,6 +100,5 @@ dependencies {
     implementation 'com.github.elirehema:worksheet:0.0.1'
     implementation 'com.nbsp:materialfilepicker:1.9.1'
     implementation group: 'com.ibm.icu', name: 'icu4j', version: '51.1'
-
 }
 apply plugin: 'com.google.gms.google-services'
