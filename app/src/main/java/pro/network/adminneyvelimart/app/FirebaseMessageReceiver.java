@@ -66,7 +66,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                     (this, 0, intent, PendingIntent.FLAG_MUTABLE);
         } else {
             pendingIntent = PendingIntent.getActivity
-                    (this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                    (this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         }
 
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -96,27 +96,11 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
             notificationChannel.setSound(uri, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        Uri sound = Uri.parse(
-                "android.resource://" +
-                        getApplicationContext().getPackageName() +
-                        "/" +
-                        R.raw.notification);
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setLooping(false);
-        try {
-            // mediaPlayer.setDataSource(String.valueOf(myUri));
-            mediaPlayer.setDataSource(FirebaseMessageReceiver.this, sound);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.stop();
-        mediaPlayer.start();
         notificationManager.notify(0, builder.build());
+        MediaPlayer mPlayer2;
+        mPlayer2= MediaPlayer.create(this, R.raw.audionew);
+        mPlayer2.setLooping(false);
+        mPlayer2.start();
     }
 
     @Override
@@ -129,7 +113,7 @@ public class FirebaseMessageReceiver extends FirebaseMessagingService {
                 getApplicationContext(),
                 1001,
                 new Intent(getApplicationContext(), FirebaseMessageReceiver.class),
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, service);
     }
